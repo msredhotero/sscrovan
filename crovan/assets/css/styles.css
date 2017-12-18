@@ -1,0 +1,114 @@
+input.center-block{
+  width:80%;
+  border-radius:8px;
+  margin-top:-30px;
+}
+
+i.fa.fa-shopping-cart{
+  font-size:30pt;
+  margin-top:10px;
+  color:#fff5e4;
+}
+
+i.glyphicon.glyphicon-user{
+  font-size:35px;
+}
+
+i.fa.fa-user{
+  font-size:30pt;
+  margin-top:10px;
+  color:#fff5e4;
+}
+
+div.row #barra{
+}
+
+div#barraup.row{
+  background-color:#939393;
+}
+
+i.fa.fa-facebook-square{
+  font-size:17pt;
+  margin-top:3px;
+}
+
+i.fa.fa-instagram{
+  font-size:17pt;
+  margin-top:3px;
+}
+
+i.fa.fa-envelope-o{
+  font-size:17pt;
+  margin-top:3px;
+}
+
+div#barraup1.row.text-center{
+  background-color:black;
+  color:#fff5e4;
+}
+
+ul.nav.nav-pills.nav-justified{
+  background-color:black;
+  color:white;
+}
+
+a{
+  color:#fff5e4;
+}
+
+div.col-md-12{
+  color:white;
+}
+
+p.tex-center{
+}
+
+body{
+  font-family:'Oswald', sans-serif;
+}
+
+/*    XXX       */
+
+.fpbsup
+{
+
+}
+.cpibsup
+{
+  margin-top:25px;
+  width: 20%;
+}
+.mprproddes
+{
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+}
+
+
+.mprlpg
+{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.mpridprod
+{
+  margin-top: 25px;
+}
+
+#producto
+{
+      background: url('../img/header-accesorios.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    color: white;
+}
+
+ .mprprod
+ {
+  margin-bottom: 60px;
+
+ }
