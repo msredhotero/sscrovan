@@ -34,7 +34,6 @@ $cadProductos = '';
     }
 
 ?>
-?>
 
 <!DOCTYPE html>
 <html>

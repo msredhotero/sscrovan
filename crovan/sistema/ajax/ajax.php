@@ -405,14 +405,13 @@ function traerProductosPorCategoriaWeb($serviciosReferencias) {
 
 	while ($row =	mysql_fetch_array($res)) {
 		$cad .= '<div class="col-xs-4">
-                    <img class=" img-responsive center-block" src="'.$row['imagenproducto'].'">
-                    <p class="text-center">'.$row['nombre'].'</p>
-                    <p class="text-center"><small> '.$row['descripcion'].' </small></p>
-                    <button type="button" class="btn btn-default" aria-label="Left Align">
-                      <span class="glyphicon  glyphicon-shopping-cart  center-block" aria-hidden="true" id="'.$row[0].'"></span> 
-                    </button> 
-                    $ '.$row['precioventa'].'                                       
-                </div>';	
+                        <img src="../'.$row['imagenproducto'].'" class="img-responsive hvr-grow">
+                        <h5>'.$row['nombre'].'</h5>
+                        <h4>$ '.$row['precioventa'].'</h4>
+                        <button type="button" class="btn btn-warning comprar" aria-label="Center Align" id="'.$row[0].'">
+                          <span class="center-block " aria-hidden="true">COMPRAR</span>
+                        </button>
+                    </div>';	
 	}
 	
 	echo $cad;
@@ -428,14 +427,13 @@ function traerProductosPorCategoriaEspecificacionWeb($serviciosReferencias) {
 
 	while ($row =	mysql_fetch_array($res)) {
 		$cad .= '<div class="col-xs-4">
-                    <img class=" img-responsive center-block" src="'.$row['imagenproducto'].'">
-                    <p class="text-center">'.$row['nombre'].'</p>
-                    <p class="text-center"><small> '.$row['descripcion'].' </small></p>
-                    <button type="button" class="btn btn-default" aria-label="Left Align">
-                      <span class="glyphicon  glyphicon-shopping-cart  center-block" aria-hidden="true" id="'.$row[0].'"></span> 
-                    </button> 
-                    $ '.$row['precioventa'].'                                       
-                </div>';	
+                        <img src="../'.$row['imagenproducto'].'" class="img-responsive hvr-grow">
+                        <h5>'.$row['nombre'].'</h5>
+                        <h4>$ '.$row['precioventa'].'</h4>
+                        <button type="button" class="btn btn-warning comprar" aria-label="Center Align" id="'.$row[0].'">
+                          <span class="center-block " aria-hidden="true">COMPRAR</span>
+                        </button>
+                    </div>';	
 	}
 	
 	echo $cad;

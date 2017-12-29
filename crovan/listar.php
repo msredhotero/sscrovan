@@ -27,7 +27,6 @@ $cadProductos = '';
     }
 
 ?>
-?>
 
 <!DOCTYPE html>
 <html>
