@@ -31,6 +31,9 @@ switch ($accion) {
 	case 'registrar':
 		registrar($serviciosUsuarios);
         break;
+    case 'registrarUsuario':
+    	registrarUsuario($serviciosUsuarios);
+    	break;
 
 case 'insertarConfiguracion':
 insertarConfiguracion($serviciosReferencias);
@@ -2380,6 +2383,36 @@ function registrar($serviciosUsuarios) {
 	
 	$res = $serviciosUsuarios->insertarUsuario($usuario,$password,$refroll,$email,$nombre);
 	if ((integer)$res > 0) {
+		echo '';	
+	} else {
+		echo $res;	
+	}
+}
+
+function registrarUsuario($serviciosUsuarios) {
+	$email = $_POST['email']; 
+	$password = $_POST['password']; 
+	$nombre = $_POST['nombre']; 
+	$apellido = $_POST['apellido']; 
+	$refroles = 4; 
+
+	$activo = 0; 
+
+	$telefono = $_POST['telefono']; 
+
+	$res = $serviciosUsuarios->insertarUsuarios($email,$password,$nombre,$apellido,$refroles,$activo,$telefono);
+
+	$token = $serviciosUsuarios->GUID();
+
+	$destinatario = $email;
+	$asunto = "Activar Cuenta";
+	$cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
+				<p>Por favor haga click <a href='saupureinconsulting.com.ar/crovan/activacion/index.php?token=".$token."'>AQUI</a> para activar la cuenta</p><br><br>
+				<p>PD: Recuerde que solo estara pendiente la confirmacion por 2 dias</p>";
+
+	if ((integer)$res > 0) {
+		$serviciosUsuarios->insertarActivacionusuarios($res,$token,'','');
+		$serviciosUsuarios->enviarMail($destinatario,$asunto,$cuerpo);
 		echo '';	
 	} else {
 		echo $res;	

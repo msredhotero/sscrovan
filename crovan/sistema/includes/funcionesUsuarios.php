@@ -236,7 +236,7 @@ function traerTodosUsuarios() {
 }
 
 function traerUsuarioId($id) {
-	$sql = "select idusuario,usuario,refroll,nombrecompleto,email,password from dbusuarios where idusuario = ".$id;
+	$sql = "select idusuario,nombre,apellido,refroles,email,password,telefono from dbusuarios where idusuario = ".$id;
 	$res = $this->query($sql,0);
 	if ($res == false) {
 		return 'Error al traer datos';
@@ -255,6 +255,96 @@ function existeUsuario($usuario) {
 	}
 }
 
+/* PARA Activacionusuarios */
+
+function insertarActivacionusuarios($refusuarios,$token,$vigenciadesde,$vigenciahasta) { 
+$sql = "insert into dbactivacionusuarios(idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta) 
+values ('',".$refusuarios.",'".utf8_decode($token)."',now(),ADDDATE(now(), INTERVAL 2 DAY))"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
+
+
+function modificarActivacionusuarios($id,$refusuarios,$token,$vigenciadesde,$vigenciahasta) { 
+$sql = "update dbactivacionusuarios 
+set 
+refusuarios = ".$refusuarios.",token = '".($token)."',vigenciadesde = '".utf8_decode($vigenciadesde)."',vigenciahasta = '".utf8_decode($vigenciahasta)."' 
+where idactivacionusuario =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function modificarActivacionusuariosConcretada($token) { 
+$sql = "update dbactivacionusuarios 
+set 
+vigenciadesde = 'NULL',vigenciahasta = 'NULL' 
+where token =".$token; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function modificarActivacionusuariosRenovada($refusuarios,$token,$vigenciadesde,$vigenciahasta) { 
+$sql = "update dbactivacionusuarios 
+set 
+vigenciadesde = now(),vigenciahasta = ADDDATE(now(), INTERVAL 2 DAY),token = '".($token)."'
+where refusuarios =".$refusuarios; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function eliminarActivacionusuarios($id) { 
+$sql = "delete from dbactivacionusuarios where idactivacionusuario =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+function eliminarActivacionusuariosPorUsuario($refusuarios) { 
+$sql = "delete from dbactivacionusuarios where refusuarios =".$refusuarios; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerActivacionusuarios() { 
+$sql = "select 
+a.idactivacionusuario,
+a.refusuarios,
+a.token,
+a.vigenciadesde,
+a.vigenciahasta
+from dbactivacionusuarios a 
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerActivacionusuariosPorId($id) { 
+$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where idactivacionusuario =".$id; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerActivacionusuariosPorToken($token) { 
+$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where token =".$token; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+
+function traerActivacionusuariosPorTokenFechas($token) { 
+$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where token ='".$token."' and now() between vigenciadesde and vigenciahasta "; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+/* Fin */
+/* /* Fin de la Tabla: dbactivacionusuarios*/
+
 function enviarEmail($destinatario,$asunto,$cuerpo) {
 
 	
@@ -270,33 +360,27 @@ function enviarEmail($destinatario,$asunto,$cuerpo) {
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
 	//dirección del remitente
-	$headers .= "From: Daniel Eduardo Duranti <info@carnesacasa.com.ar>\r\n";
+	$headers .= "From: Crovan <msredhotero@msn.com>\r\n";
 	
 	//ruta del mensaje desde origen a destino
 	$headers .= "Return-path: ".$destinatario."\r\n";
 	
 	//direcciones que recibirán copia oculta
-	$headers .= "Bcc: info@carnesacasa.com.ar,msredhotero@msn.com\r\n";
+	$headers .= "Bcc: msredhotero@msn.com\r\n";
 	
 	mail($destinatario,$asunto,$cuerpo,$headers); 	
 }
 
 
-function insertarUsuario($usuario,$password,$refroll,$email,$nombrecompleto) {
-	$sql = "INSERT INTO dbusuarios
-				(idusuario,
-				usuario,
-				password,
-				refroll,
-				email,
-				nombrecompleto)
-			VALUES
-				('',
-				'".utf8_decode($usuario)."',
-				'".utf8_decode($password)."',
-				".$refroll.",
-				'".utf8_decode($email)."',
-				'".utf8_decode($nombrecompleto)."')";
+function insertarUsuarios($email,$password,$nombre,$apellido,$refroles,$activo,$telefono) { 
+$sql = "insert into dbusuarios(idusuario,email,password,nombre,apellido,refroles,activo,telefono) 
+values ('','".utf8_decode($email)."',
+			'".utf8_decode($password)."',
+			'".utf8_decode($nombre)."',
+			'".utf8_decode($apellido)."',
+			".$refroles.",
+			".$activo.",
+			'".utf8_decode($telefono)."')"; 
 	if ($this->existeUsuario($email) == true) {
 		return "Ya existe el usuario";	
 	}
@@ -310,15 +394,30 @@ function insertarUsuario($usuario,$password,$refroll,$email,$nombrecompleto) {
 }
 
 
-function modificarUsuario($id,$usuario,$password,$refroll,$email,$nombrecompleto) {
-	$sql = "UPDATE dbusuarios
-			SET
-				usuario = '".utf8_decode($usuario)."',
-				password = '".utf8_decode($password)."',
-				email = '".utf8_decode($email)."',
-				refroles = ".$refroll.",
-				nombrecompleto = '".utf8_decode($nombrecompleto)."'
-			WHERE idusuario = ".$id;
+function modificarUsuarios($id,$email,$password,$nombre,$apellido,$refroles,$activo,$telefono) { 
+	$sql = "update dbusuarios 
+	set 
+		email = '".utf8_decode($email)."',
+		password = '".utf8_decode($password)."',
+		nombre = '".utf8_decode($nombre)."',
+		apellido = '".utf8_decode($apellido)."',
+		refroles = ".$refroles.",
+		activo = ".$activo.",
+		telefono = '".utf8_decode($telefono)."' 
+	where idusuario =".$id; 
+	$res = $this->query($sql,0);
+	if ($res == false) {
+		return 'Error al modificar datos';
+	} else {
+		return '';
+	}
+}
+
+function activarUsuario($refusuario) {
+	$sql = "update dbusuarios 
+	set 
+		activo = 1
+	where idusuario =".$refusuario; 
 	$res = $this->query($sql,0);
 	if ($res == false) {
 		return 'Error al modificar datos';

@@ -1,25 +1,35 @@
 <?php
 
-require '../../includes/funcionesUsuarios.php';
-require '../../includes/funcionesServicios.php';
+require '../../sistema/includes/funcionesUsuarios.php';
+require '../../sistema/includes/funcionesReferencias.php';
 
 
-session_start();
-
-$serviciosServicios = new ServiciosServicios();
+$serviciosReferencias       = new ServiciosReferencias();
 $serviciosUsuario = new ServiciosUsuarios();
 
 
 $token = $_GET['token'];
 
-$idcliente = $serviciosUsuario->traerActivacionusuariosPorTokenFechas($token);
+$codActivacion = $serviciosUsuario->traerActivacionusuariosPorTokenFechas($token);
 
-if ((integer)$idcliente > 0) {
-	$datosLogin = $serviciosUsuario->traerUsuarioId($idcliente);
-	$serviciosUsuario->activarUsuario($idcliente);
+$error = 0;
+if ((integer)$codActivacion > 0) {
+	$idUsuario = mysql_result($codActivacion,0,'refusuarios');
+	$activar = $serviciosUsuario->activarUsuario($idUsuario);
 	
-	$email = mysql_result($datosLogin,0,'email');
-	$serviciosUsuario->loginUsuario($email,mysql_result($datosLogin,0,'password'));	
+	$resUsuario = $serviciosUsuario->traerUsuarioId($idUsuario);
+
+	$email = mysql_result($resUsuario,0,'email');
+
+	$destinatario = $email;
+	$asunto = "Cuenta Activada Correctamente";
+	$cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
+				<p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href=''>AQUI</a></p>";
+
+	$serviciosUsuario->modificarActivacionusuariosConcretada($token);
+	//$serviciosUsuario->enviarMail($destinatario,$asunto,$cuerpo);
+} else {
+	$error = 1;
 }
 
  
@@ -100,7 +110,17 @@ if ((integer)$idcliente > 0) {
                 <div class="col-xs-1">
                 </div>
                 <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;">REGISTRATE EN CROVAN KEGS</h3></a></li>                
+                	<?php
+                		if ($error == 0) {
+                	?>
+                    <li class="dropdown"><h3 style="margin-top:-5px;">CUENTA CREADA CORRECTAMENTE</h3></a></li> 
+                    <?php
+                		} else {
+                	?>
+                	<li class="dropdown"><h3 style="margin-top:-5px;">SURGIO UN ERROR VUELVA A INTENTARLO</h3></a></li> 
+                	<?php
+                		}
+                	?>          
                 </div>                         
             </ul>
         </div>
@@ -112,46 +132,32 @@ if ((integer)$idcliente > 0) {
         <div class="col-xs-6" style="margin-top:20px;">
 
             <form>
+            	<?php
+            		if ($error == 0) {
+            	?>
                 <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">COMPLETA EL FORMULARIO CON TUS DATOS Y HACE TUS COMPRAS</h4>
+                    <h4 class="scale--js tituloA">TE DAMOS LA BIENVENIDA A CROVAN KEGS</h4>
                 </div>
-              <div class="form-group">
-                
-                <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="E-MAIL">
-              </div>
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
-              </div>
+              	<div class="col-xs-6" style="margin-top:20px;">
+              		<button type="button" class="btn-crovan ingresar">INGRESA</button>
+              	</div>
 
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtPassword2" aria-describedby="emailHelp" placeholder="CONTRASEÑA DE NUEVO">
-              </div>
-
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtNombre" aria-describedby="emailHelp" placeholder="NOMBRE">
-              </div>
-
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtApellido" aria-describedby="emailHelp" placeholder="APELLIDO">
-              </div>
-
-
-                <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtTelefono" aria-describedby="emailHelp" placeholder="TELEFONO">
-              </div>
-              <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec;">
-                <label for="exampleInputPassword1">Acepta los terminos y condiciones</label>
-                <input type="checkbox" class="form-check-input" style="margin: 0px 25px 0px 7px;">
-                <div class="pull-right" style="margin-top:-10px; margin-bottom:15px;">
-                <button type="button" class="btn-crovan registrar">REGISTRATE</button>
+              	<div class="col-xs-6" style="margin-top:20px;">
+              		<button type="button" class="btn-crovan tienda">TIENDA</button>
+              	</div>
+              	<?php
+            		} else {
+            	?>
+            	<div class="scale__container--js">
+                    <h4 class="scale--js tituloA">DEBE VOLVER A ACTIVAR SU CUENTA</h4>
                 </div>
-              </div>
-              
+
+                <div class="col-xs-12" style="margin-top:20px;">
+              		<p>Por favor vuelva a revisar su casilla de correo con las instrucciones</p>
+              	</div>
+            	<?php
+            		}
+            	?> 
               
             </form>
         </div>
@@ -217,7 +223,16 @@ if ((integer)$idcliente > 0) {
 
     <script type="text/javascript">
         $(document).ready(function(){
-          
+          $('.ingresar').click(function() {
+          	url = "../login/";
+			$(location).attr('href',url);
+          });
+
+          $('.tienda').click(function() {
+          	url = "../";
+			$(location).attr('href',url);
+          });
+
         });
     </script>      
 </body>
