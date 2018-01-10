@@ -1,7 +1,7 @@
 <?php
 
-require '../../sistema/includes/funcionesUsuarios.php';
-require '../../sistema/includes/funcionesReferencias.php';
+require '../sistema/includes/funcionesUsuarios.php';
+require '../sistema/includes/funcionesReferencias.php';
 
 
 $serviciosReferencias       = new ServiciosReferencias();
@@ -13,21 +13,30 @@ $token = $_GET['token'];
 $codActivacion = $serviciosUsuario->traerActivacionusuariosPorTokenFechas($token);
 
 $error = 0;
-if ((integer)$codActivacion > 0) {
-	$idUsuario = mysql_result($codActivacion,0,'refusuarios');
-	$activar = $serviciosUsuario->activarUsuario($idUsuario);
-	
-	$resUsuario = $serviciosUsuario->traerUsuarioId($idUsuario);
+if (mysqli_num_rows($codActivacion) > 0) {
+    $idUsuario = $serviciosUsuario->mysqli_result($codActivacion,0,'refusuarios');
+    
+    $resUsuario = $serviciosUsuario->traerUsuarioId($idUsuario);
+    
+    if ($serviciosUsuario->mysqli_result($resUsuario,0,7) == 'Si') {
+        $error = 2;
+    } else {
+    
+        
+        $activar = $serviciosUsuario->activarUsuario($idUsuario);
 
-	$email = mysql_result($resUsuario,0,'email');
+        $resUsuario = $serviciosUsuario->traerUsuarioId($idUsuario);
 
-	$destinatario = $email;
-	$asunto = "Cuenta Activada Correctamente";
-	$cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
-				<p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href=''>AQUI</a></p>";
+        $email = $serviciosUsuario->mysqli_result($resUsuario,0,'email');
 
-	$serviciosUsuario->modificarActivacionusuariosConcretada($token);
-	//$serviciosUsuario->enviarMail($destinatario,$asunto,$cuerpo);
+        $destinatario = $email;
+        $asunto = "Cuenta Activada Correctamente";
+        $cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
+                    <p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href=''>AQUI</a></p>";
+
+        $serviciosUsuario->modificarActivacionusuariosConcretada($token);
+        //$serviciosUsuario->enviarMail($destinatario,$asunto,$cuerpo);
+    }
 } else {
 	$error = 1;
 }
@@ -146,7 +155,9 @@ if ((integer)$codActivacion > 0) {
               		<button type="button" class="btn-crovan tienda">TIENDA</button>
               	</div>
               	<?php
-            		} else {
+            		} 
+                
+                    if ($error == 1) {
             	?>
             	<div class="scale__container--js">
                     <h4 class="scale--js tituloA">DEBE VOLVER A ACTIVAR SU CUENTA</h4>
@@ -154,6 +165,30 @@ if ((integer)$codActivacion > 0) {
 
                 <div class="col-xs-12" style="margin-top:20px;">
               		<p>Por favor vuelva a revisar su casilla de correo con las instrucciones</p>
+              	</div>
+            	<?php
+            		}
+            	?> 
+            	
+            	
+            	<?php
+                
+                    if ($error == 2) {
+            	?>
+            	<div class="scale__container--js">
+                    <h4 class="scale--js tituloA">SU CUENTA YA FUE ACTIVADA</h4>
+                </div>
+
+                <div class="col-xs-12" style="margin-top:20px;">
+              		<p>Puede loguearse a CROVAN KEGS</p>
+              	</div>
+              	
+              	<div class="col-xs-6" style="margin-top:20px;">
+              		<button type="button" class="btn-crovan ingresar">INGRESA</button>
+              	</div>
+
+              	<div class="col-xs-6" style="margin-top:20px;">
+              		<button type="button" class="btn-crovan tienda">TIENDA</button>
               	</div>
             	<?php
             		}
@@ -229,7 +264,7 @@ if ((integer)$codActivacion > 0) {
           });
 
           $('.tienda').click(function() {
-          	url = "../";
+          	url = "../productos/";
 			$(location).attr('href',url);
           });
 

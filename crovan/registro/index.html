@@ -97,14 +97,14 @@
               </div>
               <div class="form-group">
                 
-                <input type="text" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
-                <div class="help-blok">* Campo obligatorio</div>
+                <input type="password" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
+                <div class="help-blok">* Campo obligatorio <span id="errorP"></span></div>
               </div>
 
               <div class="form-group">
                 
-                <input type="text" class="form-control" id="txtPassword2" aria-describedby="emailHelp" placeholder="CONTRASEÑA DE NUEVO">
-                <div class="help-blok">* Campo obligatorio</div>
+                <input type="password" class="form-control" id="txtPassword2" aria-describedby="emailHelp" placeholder="CONTRASEÑA DE NUEVO">
+                <div class="help-blok">* Campo obligatorio <span id="errorP2"></span></div>
               </div>
 
               <div class="form-group">
@@ -124,6 +124,9 @@
                 
                 <input type="text" class="form-control" id="txtTelefono" aria-describedby="emailHelp" placeholder="TELEFONO">
               </div>
+              <div class="form-group">
+                  <div class="error"></div>
+                </div>
               <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec;">
                 <label for="exampleInputPassword1">Acepta los terminos y condiciones</label>
                 <input type="checkbox" class="form-check-input" style="margin: 0px 25px 0px 7px;">
@@ -206,7 +209,7 @@
                         password2: password2, 
                         telefono: telefono, 
                         accion: 'registrarUsuario'},
-                url:   '../../sistema/ajax/ajax.php',
+                url:   '../sistema/ajax/ajax.php',
                 type:  'post',
                 beforeSend: function () {
 
@@ -214,8 +217,13 @@
                 success:  function (response) {
                     if (response == '') {
                         $('.error').html('Se cargo correctamente el usuario, le enviamos un email a su correo para que active la cuenta. Tenga en cuenta que tiene 2 días para activar la cuenta sino debera volver a solictar una activación. Revise si casilla de correo no deseado en caso de no encontrar el email de Crovan Kegs. Muchas Gracias y que tenga un buen día.');
+                        $('.error').removeClass('alert alert-danger');
+                        $('.error').addClass('alert alert-success');
+                        
                     } else {
                         $('.error').html(response);    
+                        $('.error').removeClass('alert alert-success');
+                        $('.error').addClass('alert alert-danger');
                     }
                     
 
@@ -261,22 +269,26 @@
         $("#txtPassword").click(function(event) {
             $("#txtPassword").removeClass("alert alert-danger");
             $("#txtPassword").attr('placeholder','Ingrese el Contraseña');
+            $('#errorP').html('');
         });
 
         $("#txtPassword").change(function(event) {
             $("#txtPassword").removeClass("alert alert-danger");
             $("#txtPassword").attr('placeholder','Ingrese la Contraseña');
+            $('#errorP').html('');
         });
             
             
         $("#txtPassword2").click(function(event) {
             $("#txtPassword2").removeClass("alert alert-danger");
             $("#txtPassword2").attr('placeholder','Ingrese el Contraseña de Nuevo');
+            $('#errorP2').html('');
         });
 
         $("#txtPassword2").change(function(event) {
             $("#txtPassword2").removeClass("alert alert-danger");
             $("#txtPassword2").attr('placeholder','Ingrese la Contraseña de Nuevo');
+            $('#errorP2').html('');
         });
             
             
@@ -285,14 +297,12 @@
             
             if ($('#txtPassword').val() == "") {
                 $error = "Es obligatorio el campo Contraseña.";
-                $('#txtPassword').addClass("alert alert-danger");
-                $('#txtPassword').attr('placeholder',$error);
+                $('#errorP').html($error);
             }
             
             if ($('#txtPassword2').val() == "") {
                 $error = "Es obligatorio el campo Contraseña de Nuevo.";
-                $('#txtPassword2').addClass("alert alert-danger");
-                $('#txtPassword2').attr('placeholder',$error);
+                $('#errorP2').html($error);
             }
             
             if ($('#txtPassword2').val() != $('#txtPassword').val()) {

@@ -34,6 +34,12 @@ switch ($accion) {
     case 'registrarUsuario':
     	registrarUsuario($serviciosUsuarios);
     	break;
+    case 'ingresarCrovan':
+        ingresarCrovan($serviciosUsuarios);
+        break;
+    case 'logoutCrovan':
+        logoutCrovan($serviciosUsuarios);
+        break;
 
 case 'insertarConfiguracion':
 insertarConfiguracion($serviciosReferencias);
@@ -2454,6 +2460,14 @@ function enviarMail($serviciosUsuarios) {
 	//$idempresa  =	$_POST['idempresa'];
 	
 	echo $serviciosUsuarios->login($email,$pass);
+}
+
+function ingresarCrovan($serviciosUsuarios) {
+	$email		=	$_POST['email'];
+	$pass		=	$_POST['password'];
+	//$idempresa  =	$_POST['idempresa'];
+	
+	echo $serviciosUsuarios->loginCrovan($email,$pass);
 }
 
 

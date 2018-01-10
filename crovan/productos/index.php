@@ -13,8 +13,13 @@ $serviciosFunciones         = new Servicios();
 $serviciosHTML              = new ServiciosHTML();
 $serviciosReferencias       = new ServiciosReferencias();
 
-$idCategoria = $_GET['cat'];
 
+
+if (!isset($_GET['cat'])) {
+    $idCategoria = 1;
+} else {
+    $idCategoria = $_GET['cat'];
+}
 $traerSecciones = $serviciosReferencias->traerCategoriasespecificacionPorCategoria($idCategoria);
 
 $resProductos = $serviciosReferencias->traerProductos();

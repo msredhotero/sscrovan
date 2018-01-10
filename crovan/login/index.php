@@ -1,3 +1,21 @@
+<?php
+
+
+session_start();
+
+if (!isset($_SESSION['id_crovan']))
+{
+	$usuario = '';
+} else {
+    $usuario = $_SESSION['nombre_crovan'];
+}
+
+
+include ('../sistema/includes/funcionesUsuarios.php');
+include ('../sistema/includes/funcionesReferencias.php');
+    
+    
+?>
 <!DOCTYPE html>
 <html>
 
@@ -61,8 +79,18 @@
     
 </div>
 <div class="col-xs-5">
-    <div class="col-xs-12 mp-navbar ingresoY"><img src="../assets/img/iniciarsesion.png"> Bienvenido: <span class="usuarioLogueado"></span></div>
+    <?php
+        if (!isset($_SESSION['id_crovan'])) {
+    ?>
     <div class="col-xs-12 mp-navbar ingresoN">¿TODAVIA NO TENES TU USUARIO? <a href="../registro/" style="color:#00F;">INGRESA ACA</a> <img src="../assets/img/iniciarsesion.png"></div>
+    <?php
+        } else {
+    ?>
+    <div class="col-xs-12 mp-navbar ingresoY"><img src="../assets/img/iniciarsesion.png"> Bienvenido: <span class="usuarioLogueado"><?php echo $usuario; ?></span></div>
+    <?php
+        }
+    ?>
+            
 </div>
 </nav>
 </div>
@@ -84,6 +112,9 @@
         <div class="col-xs-6" style="margin-top:20px;">
 
             <form>
+               <?php
+                    if (!isset($_SESSION['id_crovan'])) {
+                ?>
                 <div class="scale__container--js">
                     <h4 class="scale--js tituloA">INGRESA CON TU USUARIO A CROVAN KEGS</h4>
                 </div>
@@ -104,10 +135,32 @@
                 <br>
                 <small id="emailHelp" class="form-text text-muted">¿OLVIDASTE TU CONTRASEÑA?</small>
                 <div class="pull-right" style="margin-top:-25px; margin-bottom:15px;">
-                <button type="button" class="btn-crovan">INGRESAR</button>
+                <button type="button" class="btn-crovan ingresar">INGRESAR</button>
 
                 </div>
               </div>
+                <?php
+                    } else {
+                ?>
+                <div class="scale__container--js">
+                    <h4 class="scale--js tituloA">USTED YA ESTA LOGUEADO EN CROVAN KEGS</h4>
+                </div>
+                <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec; height:120px;">
+                    <div class="col-xs-6" style="margin-top:20px;">
+                        <button type="button" class="btn-crovan tienda">TIENDA</button>
+                    </div>
+                    <div class="col-xs-6" style="margin-top:20px;">
+                        <button type="button" class="btn-crovan logout">SALIR</button>
+                    </div>
+                    
+
+                </div>
+                
+
+                
+                <?php
+                    }
+                ?>
               
               
             </form>
@@ -172,8 +225,11 @@
         window.addEventListener('resize', myScaleFunction);
     </script> 
     
-          <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function(){
+            
+            
+            
           function ingresar(email, password) {
             $.ajax({
                 data:  {email: email, 
@@ -189,7 +245,9 @@
                         $('.error').html('Se logueo correctamente.');
                         $('.error').removeClass('alert alert-danger');
                         $('.error').addClass('alert alert-success');
-                        
+                        url = "index.php";
+			            $(location).delay(4000).attr('href',url);
+
                     } else {
                         $('.error').html(response);    
                         $('.error').removeClass('alert alert-success');
@@ -202,6 +260,28 @@
 
 
           }
+            
+            
+        function logout() {
+
+            $('.error').html('Esperamos verlo nuevamente.');
+            $('.error').removeClass('alert alert-danger');
+            $('.error').addClass('alert alert-success');
+            url = "../logout/index.php";
+            $(location).delay(4000).attr('href',url);
+
+
+
+        }
+            
+        $('.logout').click(function() {
+            logout();
+        });
+            
+        $('.tienda').click(function() {
+            url = "../productos/";
+            $(location).delay(4000).attr('href',url);
+        });
         
             
         $("#txtEmail").click(function(event) {

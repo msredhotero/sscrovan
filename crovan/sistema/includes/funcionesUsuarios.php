@@ -72,6 +72,80 @@ if (mysqli_num_rows($respusu) > 0) {
 	return $error;
 	
 }
+    
+    function loginCrovan($usuario,$pass) {
+
+        $sqlusu = "select * from dbusuarios where email = '".$usuario."' and refroles = 4";
+
+        $error = '';
+
+        if (trim($usuario) != '' and trim($pass) != '') {
+
+            $respusu = $this->query($sqlusu,0);
+
+            if (mysqli_num_rows($respusu) > 0) {
+
+
+            $idUsua = $this->mysqli_result($respusu,0,0);
+            $sqlpass = "select concat(u.apellido,' ',u.nombre) as nombrecompleto,email,concat(u.apellido,' ',u.nombre) as usuario,r.descripcion, r.idrol, u.activo from dbusuarios u inner join tbroles r on r.idrol = u.refroles where password = '".$pass."' and idusuario = ".$idUsua;
+
+
+            $resppass = $this->query($sqlpass,0);
+
+            // debo verificar si el usuario esta activo, en caso contrario le envio un email para darse de alta.
+            $activo = $this->mysqli_result($resppass,0,5);
+
+                if ($activo == 1) {
+
+                    if (mysqli_num_rows($resppass)>0) {
+                        $error = '';
+                    } else {
+                        $error = 'Usuario o Password incorrecto';
+                    }
+
+                } else {
+                    $resVerificador = $this->traerActivacionusuariosPorUsuarioFechas($idUsua);
+                    if (mysqli_num_rows($resVerificador) > 0) {
+                        $error = 'El usuario no esta activo, verifique su casilla de correo para activarlo';
+                    } else {
+                        $token = $this->GUID();
+                        $this->insertarActivacionusuarios($idUsua,$token,'','');
+                        
+                        $destinatario = $usuario;
+                        $asunto = "Activar Cuenta";
+                        $cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
+                                    <p>Por favor haga click <a href='saupureinconsulting.com.ar/crovan/activacion/index.php?token=".$token."'>AQUI</a> para activar la cuenta</p><br><br>
+                                    <p>PD: Recuerde que solo estara pendiente la confirmacion por 2 dias</p>";
+                        //$this->enviarMail($destinatario,$asunto,$cuerpo);
+                        $error = 'El usuario no esta activo, verifique su casilla de correo para activarlo';
+                    }
+                }
+
+            } else {
+                $error = 'Usuario o Password incorrecto';	
+            }
+
+            if ($error == '') {
+                //die(var_dump($error));
+                session_start();
+                $_SESSION['usua_crovan'] = $usuario;
+                $_SESSION['nombre_crovan'] = $this->mysqli_result($resppass,0,0);
+                $_SESSION['email_crovan'] = $this->mysqli_result($resppass,0,1);
+                $_SESSION['idroll_crovan'] = $this->mysqli_result($resppass,0,4);
+                $_SESSION['refroll_crovan'] = $this->mysqli_result($resppass,0,3);
+                $_SESSION['id_crovan'] = $idUsua;
+
+                return '';
+            }
+
+        } else {
+            $error = 'Usuario y Password son campos obligatorios';	
+        }
+
+
+        return $error;
+
+    }
 
 function loginFacebook($usuario) {
 	
@@ -236,7 +310,7 @@ function traerTodosUsuarios() {
 }
 
 function traerUsuarioId($id) {
-	$sql = "select idusuario,nombre,apellido,refroles,email,password,telefono from dbusuarios where idusuario = ".$id;
+	$sql = "select idusuario,nombre,apellido,refroles,email,password,telefono,(case when activo= 1 then 'Si' else 'No' end) as activo from dbusuarios where idusuario = ".$id;
 	$res = $this->query($sql,0);
 	if ($res == false) {
 		return 'Error al traer datos';
@@ -338,6 +412,12 @@ return $res;
 
 function traerActivacionusuariosPorTokenFechas($token) { 
 $sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where token ='".$token."' and now() between vigenciadesde and vigenciahasta "; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
+
+function traerActivacionusuariosPorUsuarioFechas($usuario) { 
+$sql = "select idactivacionusuario,refusuarios,token,vigenciadesde,vigenciahasta from dbactivacionusuarios where refusuarios =".$usuario." and now() between vigenciadesde and vigenciahasta "; 
 $res = $this->query($sql,0); 
 return $res; 
 } 
@@ -468,7 +548,7 @@ function mysqli_result($res,$row=0,$col=0){
 		mysqli_query($conex,"BEGIN");
 		$result=mysqli_query($conex,$sql);
 		if ($accion && $result) {
-			$result = mysql_insert_id();
+			$result = mysqli_insert_id($conex);
 		}
 		if(!$result){
 			$error=1;
