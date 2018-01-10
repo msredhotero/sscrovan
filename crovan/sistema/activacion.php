@@ -1,18 +1,20 @@
 <?php
 
-require '../../includes/funcionesUsuarios.php';
-require '../../includes/funcionesServicios.php';
+require 'includes/funcionesUsuarios.php';
+require 'includes/funcionesProductos.php';
+require 'includes/funcionesVentas.php';
 
 
 session_start();
 
-$serviciosServicios = new ServiciosServicios();
+$serviciosProductos = new ServiciosProductos();
+$serviciosVentas = new ServiciosVentas();
 $serviciosUsuario = new ServiciosUsuarios();
 
 
-$token = $_GET['token'];
+$ui = $_GET['token'];
 
-$idcliente = $serviciosUsuario->traerActivacionusuariosPorTokenFechas($token);
+$idcliente = $serviciosUsuario->traerActivacion($ui);
 
 if ((integer)$idcliente > 0) {
 	$datosLogin = $serviciosUsuario->traerUsuarioId($idcliente);
@@ -25,201 +27,188 @@ if ((integer)$idcliente > 0) {
  
  
 ?>
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda</title>
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
-   <link rel="stylesheet" type="text/css" href="../assets/css/animate.css">
-    <link href="../assets/css/hover.css" rel="stylesheet">  
-    <link href="../assets/css/imagehover.min.css" rel="stylesheet">    
 
-    <style type="text/css">
-    .tituloA {
-      color:#FFA917; 
-      border-bottom: 2px solid #FFA917;
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    }
+<meta http-equiv='refresh' content='1000' />
 
-    .tituloA:after {
-      display: inline-block;
-      width: 100%;
+<meta name='title' content='Carnes de Primera Calidad' />
 
-    }
+<meta name='description' content='Carnes A Casa, somos una empresa abocada a la comercialización de productos cárnicos envasados al vació con los mas elevados Standars de calidad higiene y salubridad. Productos derivados de animales criados en los mejores establecimientos ganaderos del país. Nuestros productos llegan a su hogar por intermedio de transportes refrigerados cuidando celosamente la cadena de frió para mantener la máxima calidad del producto. Manipulados por personal habilitado con libreta sanitaria e indumentaria apropiada para la manipulación de alimentos. Nuestros productos están amparados por certificado de salubridad y establecimiento del SENASA (secretaria nacional de salubridad animal) desde el campo al frigorífico y del frigorífico a su mesa.' />
 
-    .scale__container--js {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-    .scale--js {
-      display: inline-block;
-      transform-origin: 50% 0;
-      -webkit-font-smoothing: antialiased;
-      transform: translate3d( 0, 0, 0);
-    }
-    .btn-crovan {
-        color: #fff;
-        background-color: #ff8601;
-        border-top: 1px solid #fe8c0e;
-        border-left: 1px solid #f48102;
-        border-bottom: 1px solid #f48102;
-        border-right: 1px solid #fe8c0e;
-        padding: 10px 40px;
-        font-weight: 600;
-    }
-    </style>
+<meta name='keywords' content='Carnes, Envio Gratis, Frigorifico, Novillo, Ternera' />
+
+<meta name='distribution' content='Global' />
+
+<meta name='language' content='es' />
+
+<meta name='identifier-url' content='http://www.carnesacasa.com.ar' />
+
+<meta name='rating' content='General' />
+
+<meta name='reply-to' content='' />
+
+<meta name='author' content='Webmasters' />
+
+<meta http-equiv='Pragma' content='no-cache/cache' />
+
+<link rel="carnesacasa" href="imagenes/carnesacasaicon.ico" />
+
+
+<meta http-equiv='Cache-Control' content='no-cache' />
+
+<meta name='robots' content='all' />
+
+<meta name='revisit-after' content='7 day' />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+
+<title>Carnes A Casa</title>
+
+
+
+		<link rel="stylesheet" type="text/css" href="css/estilo.css"/>
+
+<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+
+         <link rel="stylesheet" href="css/jquery-ui.css">
+
+    <script src="js/jquery-ui.js"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        
+      <script type="text/javascript">
+		$( document ).ready(function() {
+			$('#icoCate').click(function() {
+				$('#icoCate').hide();
+				$('.todoMenu').show(100, function() {
+					$('#menuCate').animate({'margin-left':'0px'}, {
+													duration: 800,
+													specialEasing: {
+													width: "linear",
+													height: "easeOutBounce"
+													}});
+				});
+			});
+			
+			$('.ocultar').click(function(){
+				$('#icoCate').show(100, function() {
+					$('#menuCate').animate({'margin-left':'-235px'}, {
+													duration: 800,
+													specialEasing: {
+													width: "linear",
+													height: "easeOutBounce"
+													}});
+				});
+				$('.todoMenu').hide();
+			});
+			
+			
+		
+
+		});
+	</script>
+
+<style>
+
+	label {
+		padding-top:6px;
+		padding-bottom:3px;
+	}
+	input-group {
+		padding:4px;
+	}
+	
+
+</style>
+
+        
+        
 </head>
 
 
 
 <body>
-<div class="row" id="barraup">
-<nav class="navbar navbar-default">
-<div class="col-xs-3">
-    <div class="col-xs-12">
-        <img src="../assets/img/logonav.png" class="img-responsive pull-right imgnavbar">
+
+
+<div class="content">
+
+<div class="row" style="margin-top:-20px; font-family:Verdana, Geneva, sans-serif;">
+	<div class="col-md-6" align="center">
+		<a href="index.php" title="Carnes A Casa"><img src="imagenes/logo.png"></a>
+    </div>
+    <div class="col-md-6" align="right" style="padding-right:100px; padding-top:50px;">
+		  <div class="col-md-12" style="height:25px;text-shadow: 1px 1px #fff;">
+         	<p><span style="color: #009; font-weight:bold; font-size:16px;">Contáctenos</span></p>
+         </div>
+         <div class="col-md-12" style="height:25px;text-shadow: 1px 1px #fff;">
+         	<p><span style="color: #F00; font-weight:bold; font-size:18px;">(011) 15 3946 - 7546</span></p>
+         </div>
+         <div class="col-md-12" style="height:25px;text-shadow: 1px 1px #fff;">
+         	<p>info@carnesacasa.com.ar - dsagasti@yahoo.com.ar</p>
+         </div>
+         <div class="col-md-12" style="height:25px;text-shadow: 1px 1px #fff;">
+         	<p><span style="color: #333; font-weight:bold; font-size:15px;">Calle 136 n° 1408 La Plata</span></p>
+         </div>
+         <div class="col-md-12" style="height:25px;text-shadow: 1px 1px #fff;">
+         	<p>Horarios de Atención, Lun a Vie de 09:00 a 20:00 Hs</p>
+         </div>
+
     </div>
 </div>
-<div class="col-xs-4">
-    
-</div>
-<div class="col-xs-5">
-    <div class="col-xs-12 mp-navbar">¿YA ESTAS REGISTRADO? <a href="../login/" style="color:#00F;">INGRESA ACA</a> <img src="../assets/img/iniciarsesion.png"></div>
-</div>
-</nav>
-</div>
+
+
+
+<div style=" background-color:#FFF; border:1px solid #F7F7F7;height: auto; position: relative;margin-bottom:35px; padding:12px;box-shadow: 2px 2px 5px #999;
+				-webkit-box-shadow: 2px 2px 5px #999;
+  				-moz-box-shadow: 2px 2px 5px #999;">
+        
+                
+
+<div class="row" align="center">
     <div class="row">
-        <div class="col-xs-12">
-            <ul class="nav nav-pills nav-justified">
-                <div class="col-xs-1">
-                </div>
-                <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;">REGISTRATE EN CROVAN KEGS</h3></a></li>                
-                </div>                         
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-3">
-            
-        </div>
-        <div class="col-xs-6" style="margin-top:20px;">
+    <img src="imagenes/10897120_1602827289939979_2964203372121633332_n.jpg" width="720" height="456" style="border-radius: 10px 10px 10px 10px;
+-moz-border-radius: 10px 10px 10px 10px;
+-webkit-border-radius: 10px 10px 10px 10px;
+border: 1px outset #000000;">
+	</div>
+	<div class="row" style="margin:10px;">
 
-            <form>
-                <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">COMPLETA EL FORMULARIO CON TUS DATOS Y HACE TUS COMPRAS</h4>
-                </div>
-              <div class="form-group">
-                
-                <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="E-MAIL">
-              </div>
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
-              </div>
-
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtPassword2" aria-describedby="emailHelp" placeholder="CONTRASEÑA DE NUEVO">
-              </div>
-
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtNombre" aria-describedby="emailHelp" placeholder="NOMBRE">
-              </div>
-
-              <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtApellido" aria-describedby="emailHelp" placeholder="APELLIDO">
-              </div>
-
-
-                <div class="form-group">
-                
-                <input type="text" class="form-control" id="txtTelefono" aria-describedby="emailHelp" placeholder="TELEFONO">
-              </div>
-              <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec;">
-                <label for="exampleInputPassword1">Acepta los terminos y condiciones</label>
-                <input type="checkbox" class="form-check-input" style="margin: 0px 25px 0px 7px;">
-                <div class="pull-right" style="margin-top:-10px; margin-bottom:15px;">
-                <button type="button" class="btn-crovan registrar">REGISTRATE</button>
-                </div>
-              </div>
-              
-              
-            </form>
-        </div>
-        <div class="col-xs-3">
-            
-        </div>
+    <h2>Su cuenta (<?php echo $email; ?>) se activo <strong>Correctamente <img src="imagenes/checkCuentaAct.png" width="50" height="42" >,</strong><i>Carnes a Casa</i> le agredece empezar a ser parte de nuestra empresa.</h2>
+<br>
     </div>
 
+<button type="button" class="btn btn-default volver" id="1">
+  <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Volver
+</button>
 
-    <div class="row">
-        <div class="col-xs-12 ">
-            <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
-        </div>
-    </div>
-    <script src="../assets/js/jquery.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.easing.min.js"></script>
-    <script src="../assets/js/scrolling-nav.js"></script>
-    <script src="../assets/js/wow.js"></script>
-    <script>
-     new WOW().init();
+</div>
+</div>
 
-     function scaleHeader() {
-          var scalable = document.querySelectorAll('.scale--js');
-          var margin = 10;
-          for (var i = 0; i < scalable.length; i++) {
-            var scalableContainer = scalable[i].parentNode;
-            scalable[i].style.transform = 'scale(1)';
-            var scalableContainerWidth = scalableContainer.offsetWidth - margin;
-            var scalableWidth = scalable[i].offsetWidth;
-            scalable[i].style.transform = 'scale(' + scalableContainerWidth / scalableWidth + ')';
-            scalableContainer.style.height = scalable[i].getBoundingClientRect().height + 'px';
-          }
-        } 
+</div><!-- fin del content -->
+<script type="text/javascript">
+$( document ).ready(function() {
 
+$('.volver').click(function(event){
+			url = "index.php";
+			$(location).attr('href',url);
+	});//fin del boton volver
+});
+</script>
 
-        // Debounce by David Walsch
-        // https://davidwalsh.name/javascript-debounce-function
-
-        function debounce(func, wait, immediate) {
-            var timeout;
-            return function() {
-                var context = this, args = arguments;
-                var later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                var callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        };
-
-        var myScaleFunction = debounce(function() {
-            scaleHeader();
-        }, 250);
-
-        myScaleFunction();
-
-        window.addEventListener('resize', myScaleFunction);
-    </script>   
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-          
-        });
-    </script>      
 </body>
 
 </html>

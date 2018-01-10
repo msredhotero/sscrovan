@@ -3229,7 +3229,7 @@ return $res;
 /* Fin */
 /* /* Fin de la Tabla: tbautorizacion*/
 
-function query($sql,$accion) {
+function query_p($sql,$accion) {
 		
 		
 		
@@ -3263,6 +3263,65 @@ function query($sql,$accion) {
 			mysql_query("COMMIT");
 			return $result;
 		}
+		
+	}
+
+	function mysqli_result($res,$row=0,$col=0){
+	    $numrows = mysqli_num_rows($res);
+	    if ($numrows && $row <= ($numrows-1) && $row >=0){
+	        mysqli_data_seek($res,$row);
+	        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+	        if (isset($resrow[$col])){
+	            return $resrow[$col];
+	        }
+	    }
+	    return false;
+	}
+
+
+	function query_p($sql,$accion) {
+		
+		
+		
+		require_once 'appconfig.php';
+
+		$appconfig	= new appconfig();
+		$datos		= $appconfig->conexion();	
+		$hostname	= $datos['hostname'];
+		$database	= $datos['database'];
+		$username	= $datos['username'];
+		$password	= $datos['password'];
+		
+		//$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
+		$conex = mysqli_connect($hostname,$username,$password, $database);
+
+		if (!$conex) {
+		    echo "Error: No se pudo conectar a MySQL." . PHP_EOL;
+		    echo "errno de depuración: " . mysqli_connect_errno() . PHP_EOL;
+		    echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
+		    exit;
+		}
+		//mysql_select_db($database);
+		
+		$error = 0;
+		mysqli_query("BEGIN");
+		$result=mysqli_query($sql,$conex);
+		if ($accion && $result) {
+			$result = mysql_insert_id();
+		}
+		if(!$result){
+			$error=1;
+		}
+		if($error==1){
+			mysqli_query("ROLLBACK");
+			return false;
+		}
+		 else{
+			mysqli_query("COMMIT");
+			return $result;
+		}
+
+		mysqli_close($conex);
 		
 	}
 
