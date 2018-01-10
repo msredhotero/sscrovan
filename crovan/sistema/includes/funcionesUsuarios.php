@@ -30,16 +30,16 @@ if (trim($usuario) != '' and trim($pass) != '') {
 
 $respusu = $this->query($sqlusu,0);
 
-if (mysql_num_rows($respusu) > 0) {
+if (mysqli_num_rows($respusu) > 0) {
 	
 	
-	$idUsua = mysql_result($respusu,0,0);
-	$sqlpass = "select nombrecompleto,email,usuario,r.descripcion, r.idrol from dbusuarios u inner join tbroles r on r.idrol = u.refroles where password = '".$pass."' and idusuario = ".$idUsua;
+	$idUsua = $this->mysqli_result($respusu,0,0);
+	$sqlpass = "select concat(u.apellido,' ',u.nombre) as nombrecompleto,email,concat(u.apellido,' ',u.nombre) as usuario,r.descripcion, r.idrol from dbusuarios u inner join tbroles r on r.idrol = u.refroles where password = '".$pass."' and idusuario = ".$idUsua;
 
 
 	$resppass = $this->query($sqlpass,0);
 	
-	if (mysql_num_rows($resppass) > 0) {
+	if (mysqli_num_rows($resppass)>0) {
 		$error = '';
 		} else {
 			$error = 'Usuario o Password incorrecto';
@@ -56,10 +56,10 @@ if (mysql_num_rows($respusu) > 0) {
 		//die(var_dump($error));
 		session_start();
 		$_SESSION['usua_predio'] = $usuario;
-		$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
-		$_SESSION['email_predio'] = mysql_result($resppass,0,1);
-		$_SESSION['idroll_predio'] = mysql_result($resppass,0,4);
-		$_SESSION['refroll_predio'] = mysql_result($resppass,0,3);
+		$_SESSION['nombre_predio'] = $this->mysqli_result($resppass,0,0);
+		$_SESSION['email_predio'] = $this->mysqli_result($resppass,0,1);
+		$_SESSION['idroll_predio'] = $this->mysqli_result($resppass,0,4);
+		$_SESSION['refroll_predio'] = $this->mysqli_result($resppass,0,3);
 		
 		return '';
 	}
@@ -83,15 +83,15 @@ if (trim($usuario) != '') {
 
 $respusu = $this->query($sqlusu,0);
 
-	if (mysql_num_rows($respusu) > 0) {
+	if (mysqli_num_rows($respusu) > 0) {
 		
 		
 		if ($error == '') {
 			session_start();
 			$_SESSION['usua_predio'] = $usuario;
-			$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
-			$_SESSION['email_predio'] = mysql_result($resppass,0,1);
-			$_SESSION['refroll_predio'] = mysql_result($resppass,0,3);
+			$_SESSION['nombre_predio'] = $this->mysqli_result($resppass,0,0);
+			$_SESSION['email_predio'] = $this->mysqli_result($resppass,0,1);
+			$_SESSION['refroll_predio'] = $this->mysqli_result($resppass,0,3);
 			//$error = 'andube por aca'-$sqlusu;
 		}
 		
@@ -118,19 +118,19 @@ if (trim($usuario) != '' and trim($pass) != '') {
 
 	$respusu = $this->query($sqlusu,0);
 	
-	if (mysql_num_rows($respusu) > 0) {
+	if (mysqli_num_rows($respusu) > 0) {
 		$error = '';
 		
-		$idUsua = mysql_result($respusu,0,0);
+		$idUsua = $this->mysqli_result($respusu,0,0);
 		$sqlpass = "select concat(apellido,' ',nombre),email,refroles from dbusuarios where password = '".$pass."' and IdUsuario = ".$idUsua;
 	
 		$resppass = $this->query($sqlpass,0);
 		
-			if (mysql_num_rows($resppass) > 0) {
+			if (mysqli_num_rows($resppass) > 0) {
 				$error = '';
 
 			} else {
-				if (mysql_result($respusu,0,'activo') == 0) {
+				if ($this->mysqli_result($respusu,0,'activo') == 0) {
 					$error = 'El usuario no fue activado, verifique su cuenta de email: '.$usuario;
 				} else {
 					$error = 'Usuario o Password incorrecto';
@@ -148,9 +148,9 @@ if (trim($usuario) != '' and trim($pass) != '') {
 		if ($error == '') {
 			session_start();
 			$_SESSION['usua_predio'] = $usuario;
-			$_SESSION['nombre_predio'] = mysql_result($resppass,0,0);
-			$_SESSION['email_predio'] = mysql_result($resppass,0,1);
-			$_SESSION['refroll_predio'] = mysql_result($resppass,0,2);
+			$_SESSION['nombre_predio'] = $this->mysqli_result($resppass,0,0);
+			$_SESSION['email_predio'] = $this->mysqli_result($resppass,0,1);
+			$_SESSION['refroll_predio'] = $this->mysqli_result($resppass,0,2);
 		}
 	
 	
@@ -248,7 +248,7 @@ function traerUsuarioId($id) {
 function existeUsuario($usuario) {
 	$sql = "select * from dbusuarios where email = '".$usuario."'";
 	$res = $this->query($sql,0);
-	if (mysql_num_rows($res)>0) {
+	if (mysqli_num_rows($res)>0) {
 		return true;	
 	} else {
 		return false;	
@@ -428,7 +428,19 @@ function activarUsuario($refusuario) {
 
 
 
-function query($sql,$accion) {
+function mysqli_result($res,$row=0,$col=0){
+	    $numrows = mysqli_num_rows($res);
+	    if ($numrows && $row <= ($numrows-1) && $row >=0){
+	        mysqli_data_seek($res,$row);
+	        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+	        if (isset($resrow[$col])){
+	            return $resrow[$col];
+	        }
+	    }
+	    return false;
+	}
+
+	function query($sql,$accion) {
 		
 		
 		
@@ -441,13 +453,20 @@ function query($sql,$accion) {
 		$username	= $datos['username'];
 		$password	= $datos['password'];
 		
-		$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
+		//$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
+		$conex = mysqli_connect($hostname,$username,$password, $database);
+
+		if (!$conex) {
+		    echo "Error: No se pudo conectar a MySQL." . PHP_EOL;
+		    echo "errno de depuración: " . mysqli_connect_errno() . PHP_EOL;
+		    echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
+		    exit;
+		}
+		//mysql_select_db($database);
 		
-		mysql_select_db($database);
-		
-		        $error = 0;
-		mysql_query("BEGIN");
-		$result=mysql_query($sql,$conex);
+		$error = 0;
+		mysqli_query($conex,"BEGIN");
+		$result=mysqli_query($conex,$sql);
 		if ($accion && $result) {
 			$result = mysql_insert_id();
 		}
@@ -455,13 +474,15 @@ function query($sql,$accion) {
 			$error=1;
 		}
 		if($error==1){
-			mysql_query("ROLLBACK");
+			mysqli_query($conex,"ROLLBACK");
 			return false;
 		}
 		 else{
-			mysql_query("COMMIT");
+			mysqli_query($conex,"COMMIT");
 			return $result;
 		}
+
+		mysqli_close($conex);
 		
 	}
 

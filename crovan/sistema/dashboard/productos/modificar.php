@@ -53,10 +53,10 @@ $lblreemplazo	= array("Cod. Barra","Stock Minimo","Precio Costo","Precio Venta",
 
 
 $resCategorias 	= $serviciosReferencias->traerCategorias();
-$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resCategorias,array(1),'',mysql_result($resResultado,0,'refcategorias'));
+$cadRef 	= $serviciosFunciones->devolverSelectBoxActivo($resCategorias,array(1),'',$serviciosReferencias->mysqli_result($resResultado,0,'refcategorias'));
 
 $resProveedores	= $serviciosReferencias->traerProveedores();
-$cadRef2 	= $serviciosFunciones->devolverSelectBoxActivo($resProveedores,array(1),'',mysql_result($resResultado,0,'refproveedores'));
+$cadRef2 	= $serviciosFunciones->devolverSelectBoxActivo($resProveedores,array(1),'',$serviciosReferencias->mysqli_result($resResultado,0,'refproveedores'));
     
 $refdescripcion = array(0 => $cadRef, 1=>$cadRef2);
 $refCampo 	=  array("refcategorias","refproveedores");
@@ -76,16 +76,16 @@ $resContactos = $serviciosReferencias->traerEspecificacionesproducto();
 $resContactosCountries = $serviciosReferencias->traerProductoespecificacionesPorProducto($id);
 
 
-	while ($subrow = mysql_fetch_array($resContactosCountries)) {
+	while ($subrow = mysqli_fetch_array($resContactosCountries)) {
 			$arrayFS[] = $subrow;
 	}
 
 
 
 $cadUser = '<ul class="list-inline" id="lstContact">';
-while ($rowFS = mysql_fetch_array($resContactos)) {
+while ($rowFS = mysqli_fetch_array($resContactos)) {
 	$check = '';
-	if (mysql_num_rows($resContactosCountries)>0) {
+	if (mysqli_num_rows($resContactosCountries)>0) {
 		foreach ($arrayFS as $item) {
 			if (stripslashes($item['refespecificacionesproducto']) == $rowFS[0]) {
 				$check = 'checked';	
@@ -266,7 +266,7 @@ if ($_SESSION['idroll_predio'] != 1) {
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	if (<?php echo mysql_result($resResultado,0,'activo'); ?> == 1) {
+	if (<?php echo $serviciosReferencias->mysqli_result($resResultado,0,'activo'); ?> == 1) {
 		$('#activo').prop('checked',true);	
 	} else {
 		$('#activo').prop('checked',false);	

@@ -212,7 +212,12 @@
 
                 },
                 success:  function (response) {
-                    $('.error').html(response);
+                    if (response == '') {
+                        $('.error').html('Se cargo correctamente el usuario, le enviamos un email a su correo para que active la cuenta. Tenga en cuenta que tiene 2 días para activar la cuenta sino debera volver a solictar una activación. Revise si casilla de correo no deseado en caso de no encontrar el email de Crovan Kegs. Muchas Gracias y que tenga un buen día.');
+                    } else {
+                        $('.error').html(response);    
+                    }
+                    
 
                 }
             });

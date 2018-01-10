@@ -42,9 +42,9 @@ function GUID()
 		$sql		=	"select * from images where refproyecto =".$id." and imagen = '".$nombre."' and type = '".$type."'";
 		$resultado  =   $this->query($sql,0);
 			   
-			   if(mysql_num_rows($resultado)>0){
+			   if(mysqli_num_rows($resultado)>0){
 	
-				   return mysql_result($resultado,0,0);
+				   return $this->mysqli_result($resultado,0,0);
 	
 			   }
 	
@@ -190,8 +190,8 @@ function crearDirectorioPrincipal($dir) {
 							where f.idfoto =".$id;
 		$resImg		=	$this->query($sql,0);
 		
-		if (mysql_num_rows($resImg)>0) {
-			$res 		=	$this->borrarArchivo($id,mysql_result($resImg,0,0));
+		if (mysqli_num_rows($resImg)>0) {
+			$res 		=	$this->borrarArchivo($id,$this->mysqli_result($resImg,0,0));
 		} else {
 			$res = true;
 		}
@@ -229,8 +229,8 @@ function crearDirectorioPrincipal($dir) {
 							where s.idproducto =".$id;
 		$resImg		=	$this->query($sql,0);
 		
-		if (mysql_num_rows($resImg)>0) {
-			$res 		=	$this->borrarArchivo(mysql_result($resImg,0,1),mysql_result($resImg,0,0));
+		if (mysqli_num_rows($resImg)>0) {
+			$res 		=	$this->borrarArchivo($this->mysqli_result($resImg,0,1),$this->mysqli_result($resImg,0,0));
 		} else {
 			$res = true;
 		}
@@ -248,7 +248,7 @@ function crearDirectorioPrincipal($dir) {
 function yaExiste($anio,$mes) {
 	$sql = "select idadministrativo from dbadministrativo where anio = ".$anio." and mes = ".$mes;
 	$res	=	$this->query($sql,0);
-	if (mysql_num_rows($res) > 0) {
+	if (mysqli_num_rows($res) > 0) {
 		return true;
 	} else {
 		return false;
@@ -717,8 +717,8 @@ function zerofill($valor, $longitud){
 function generarCodigo() {
 	$sql = "select idproducto from dbproductos order by idproducto desc limit 1";
 	$res = $this->query($sql,0);
-	if (mysql_num_rows($res)>0) {
-		$c = $this->zerofill(mysql_result($res,0,0)+1,6);
+	if (mysqli_num_rows($res)>0) {
+		$c = $this->zerofill($this->mysqli_result($res,0,0)+1,6);
 		return "PRO".$c;
 	}
 	return "PRO000001";
@@ -727,7 +727,7 @@ function generarCodigo() {
 function existeCodigo($codigo) {
 	$sql = "select idproducto from dbproductos where codigo ='".$codigo."'";
 	$res = $this->query($sql,0);
-	if (mysql_num_rows($res)>0) {
+	if (mysqli_num_rows($res)>0) {
 		return 1;
 	}
 	return 0;
@@ -785,7 +785,7 @@ function descontarStock($idProductos, $cantidad) {
 	
 	$producto = $this->traerProductosPorId($idProductos);
 	
-	return mysql_result($producto,0,'nombre'); 
+	return $this->mysqli_result($producto,0,'nombre'); 
 }
 
 function sumarStock($idProductos, $cantidad) {
@@ -1554,7 +1554,7 @@ function registrarFaltantes($iddetallepedido, $cantidad) {
 function determinarEstado($idpedido) {
 	$sql = 'SELECT sum(falto) FROM dbdetallepedido where refpedidos ='.$idpedido;
 	$res = $this->query($sql,0);
-	if (mysql_result($res,0,0)== 0) {
+	if ($this->mysqli_result($res,0,0)== 0) {
 		$sqlUpdate = "update dbpedidos
 						set refestados = 3
 						where	idpedido = ".$idpedido;	
@@ -2014,8 +2014,8 @@ function generarNroVenta() {
 	$sql = "select max(idventa) as id from dbventas";	
 	$res = $this->query($sql,0);
 	
-	if (mysql_num_rows($res)>0) {
-		$nro = 'CC'.str_pad(mysql_result($res,0,0)+1, 8, "0", STR_PAD_LEFT);
+	if (mysqli_num_rows($res)>0) {
+		$nro = 'CC'.str_pad($this->mysqli_result($res,0,0)+1, 8, "0", STR_PAD_LEFT);
 	} else {
 		$nro = 'CC00000001';
 	}
@@ -2424,7 +2424,7 @@ function graficosProductosConsumo($anio) {
 			";
 
 	
-	$resT = mysql_result($this->query($sqlT,0),0,0);
+	$resT = $this->mysqli_result($this->query($sqlT,0),0,0);
 	$resR = $this->query($sql,0);
 	
 	$cad	= "Morris.Donut({
@@ -2599,8 +2599,8 @@ where
 		p.refclientes = ".$idCliente.")) * -1 as cuenta";
 $res = $this->query($sql,0);
 
-	if (mysql_num_rows($res)>0) {
-		return mysql_result($res,0,0);
+	if (mysqli_num_rows($res)>0) {
+		return $this->mysqli_result($res,0,0);
 	}
 	
 	return 0;
