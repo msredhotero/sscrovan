@@ -21,7 +21,7 @@ $resProductos = $serviciosReferencias->traerProductos();
 
 $cadProductos = '';
     $cadProductos .= '<option value="0"> </option>';
-    while ($row = mysql_fetch_array($resProductos)) {
+    while ($row = mysqli_fetch_array($resProductos)) {
 
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
@@ -35,18 +35,18 @@ $cadProductos = '';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/material-icons.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-   <link rel="stylesheet" type="text/css" href="assets/css/animate.css">
-    <link href="assets/css/hover.css" rel="stylesheet">  
-    <link href="assets/css/imagehover.min.css" rel="stylesheet">  
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+   <link rel="stylesheet" type="text/css" href="../assets/css/animate.css">
+    <link href="../assets/css/hover.css" rel="stylesheet">  
+    <link href="../assets/css/imagehover.min.css" rel="stylesheet">  
 
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/liquidmetal.js" type="text/javascript"></script>
-    <script src="assets/js/jquery.flexselect.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="assets/css/flexselect.css" type="text/css" media="screen" />   
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/liquidmetal.js" type="text/javascript"></script>
+    <script src="../assets/js/jquery.flexselect.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../assets/css/flexselect.css" type="text/css" media="screen" />   
 </head>
 
 <body>
@@ -56,7 +56,7 @@ $cadProductos = '';
 <nav class="navbar navbar-default">
 <div class="col-xs-3">
     <div class="col-xs-12">
-        <img src="assets/img/logonav.png" class="img-responsive pull-right imgnavbar">
+        <img src="../assets/img/logonav.png" class="img-responsive pull-right imgnavbar">
     </div>
 </div>
 <div class="col-xs-6">
@@ -72,8 +72,8 @@ $cadProductos = '';
     </div>
 </div>
 <div class="col-xs-3">
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
+    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
+    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
 </div>
 </nav>
 </div>
@@ -145,7 +145,7 @@ $cadProductos = '';
                 <div class="col-xs-12">
                   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                   <?php
-                    while ($row = mysql_fetch_array($traerSecciones)) {
+                    while ($row = mysqli_fetch_array($traerSecciones)) {
                         $traerValores = $serviciosReferencias->traerEspecificacionesproductoPorGrupoCategoria($row['refgrupoespecificaciones'], $idCategoria);
                 ?>
                 <div class="panel panel-default">
@@ -160,7 +160,7 @@ $cadProductos = '';
                   <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
                       <?php 
-                        while ($rowD = mysql_fetch_array($traerValores)) {
+                        while ($rowD = mysqli_fetch_array($traerValores)) {
                       ?>
                       <li role="presentation" class="lstSecciones"><a href="javascript:void(0)" class="subseccion" id="<?php echo $rowD[0]; ?>"><?php echo $rowD[2]; ?></a></li>
                         <?php
@@ -187,7 +187,7 @@ $cadProductos = '';
                 </div>
                 <div class="col-xs-12 text-center lstProductos">
                     <div class="col-xs-4 hidden">
-                        <img src="assets/img/prod/1.png" class="img-responsive hvr-grow">
+                        <img src="../assets/img/prod/1.png" class="img-responsive hvr-grow">
                         <h5>Nombre del producto</h5>
                         <h4>$xx.xx</h4>
                         <button type="button" class="btn btn-warning" aria-label="Center Align">
@@ -269,19 +269,19 @@ $cadProductos = '';
             <div class="row">
                 <div class="col-xs-2"></div>
                 <div class="col-lg-offset-0 col-xs-2 text-center">
-                    <img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png">
+                    <img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png">
                     <p class="text-center">Detalle producto</p>
                 </div>
                 <div class="col-xs-2">
-                    <img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png">
+                    <img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png">
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2">
-                    <img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png">
+                    <img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png">
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2">
-                    <img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png">
+                    <img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png">
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2"></div>
@@ -294,10 +294,10 @@ $cadProductos = '';
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
         </div>
     </div>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery.easing.min.js"></script>
-    <script src="assets/js/scrolling-nav.js"></script>
-    <script src="assets/js/wow.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.easing.min.js"></script>
+    <script src="../assets/js/scrolling-nav.js"></script>
+    <script src="../assets/js/wow.js"></script>
     <script>
      new WOW().init();
     </script>   
@@ -310,7 +310,7 @@ $cadProductos = '';
         
         $("select.flexselect").change(function() {
             if ($("select.flexselect").val() != null) {
-                url = "producto-seleccionado.php?prod=" + $("select.flexselect").val();
+                url = "../detalle/index.php?prod=" + $("select.flexselect").val();
                 $(location).attr('href',url);    
             }
             
@@ -368,7 +368,7 @@ $cadProductos = '';
             usersid =  $(this).attr("id");
               if (!isNaN(usersid)) {
                 
-                url = "producto-seleccionado.php?prod=" + usersid;
+                url = "../detalle/index.php?prod=" + usersid;
                 $(location).attr('href',url);
               } else {
                 alert("Error, vuelva a realizar la acción.");   

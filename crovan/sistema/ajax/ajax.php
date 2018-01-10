@@ -406,7 +406,7 @@ function traerProductosPorCategoriaWeb($serviciosReferencias) {
 	$cad = '';
 
 
-	while ($row =	mysql_fetch_array($res)) {
+	while ($row =	mysqli_fetch_array($res)) {
 		$cad .= '<div class="col-xs-4">
                         <img src="../'.$row['imagenproducto'].'" class="img-responsive hvr-grow">
                         <h5>'.$row['nombre'].'</h5>
@@ -428,7 +428,7 @@ function traerProductosPorCategoriaEspecificacionWeb($serviciosReferencias) {
 	$cad = '';
 
 
-	while ($row =	mysql_fetch_array($res)) {
+	while ($row =	mysqli_fetch_array($res)) {
 		$cad .= '<div class="col-xs-4">
                         <img src="../'.$row['imagenproducto'].'" class="img-responsive hvr-grow">
                         <h5>'.$row['nombre'].'</h5>
@@ -449,7 +449,7 @@ function traerProductosWeb($serviciosReferencias) {
 	
 	$cad = '';
 	$i = 0;
-	while ($row =	mysql_fetch_array($res)) {
+	while ($row =	mysqli_fetch_array($res)) {
 		$i +=1;
 		$cad .= ' <tr>
 				 <th scope="row">'.$i.'</th>
@@ -470,7 +470,7 @@ function traerProductosWebOrden($serviciosReferencias) {
 	
 	$cad = '';
 	$i = 0;
-	while ($row =	mysql_fetch_array($res)) {
+	while ($row =	mysqli_fetch_array($res)) {
 		$i +=1;
 		$cad .= ' <tr>
 				 <th scope="row">'.$i.'</th>
@@ -490,7 +490,7 @@ function traerProductosWebBuscar($serviciosReferencias) {
 	
 	$cad = '';
 	$i = 0;
-	while ($row =	mysql_fetch_array($res)) {
+	while ($row =	mysqli_fetch_array($res)) {
 		$i +=1;
 		$cad .= ' <tr>
 				 <th scope="row">'.$i.'</th>
@@ -658,7 +658,7 @@ function traerProductosPorId($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$cad3 .= '<tr>
 					<td>'.utf8_encode($rowJ['nombre']).'</td>
 					<td>'.($rowJ['codigobarra']).'</td>
@@ -877,7 +877,7 @@ function traerDetalleVentaPorCliente($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$total += $rowJ['total'];
 		$cad3 .= '<tr>
 					<td>'.utf8_encode($rowJ['producto']).'</td>
@@ -978,7 +978,7 @@ function traerVentasPorCliente($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$cad3 .= '<tr>
 					<td>'.utf8_encode($rowJ['numero']).'</td>
 					<td>'.($rowJ['fecha']).'</td>
@@ -1026,7 +1026,7 @@ function traerVentasPorClienteACuenta($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$cad3 .= '<tr>
 					<td>'.utf8_encode($rowJ['numero']).'</td>
 					<td>'.($rowJ['fecha']).'</td>
@@ -1073,7 +1073,7 @@ function traerDetallePagosPorCliente($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$cad3 .= '<tr>
 					<td>'.$rowJ['fechapago'].'</td>
 					<td>'.$rowJ['pago'].'</td>
@@ -1230,7 +1230,7 @@ function buscarProductos($serviciosReferencias) {
                         </tr>
 						</thead>
 						<tbody id="resultadosProd">';
-	while ($rowJ = mysql_fetch_array($res)) {
+	while ($rowJ = mysqli_fetch_array($res)) {
 		$cad3 .= '<tr>
 					<td><input type="checkbox" class="form-control" name="produ'.$rowJ[0].'" id="produ'.$rowJ[0].'" /></td>
 					<td>'.utf8_encode($rowJ[1]).'</td>
@@ -1311,7 +1311,7 @@ function modificarprecios($serviciosReferencias) {
 	
 	$cad = 'produ';
 	
-	while ($rowFS = mysql_fetch_array($resCategorias)) {
+	while ($rowFS = mysqli_fetch_array($resCategorias)) {
 		if (isset($_POST[$cad.$rowFS[0]])) {
 			$serviciosReferencias->modificarprecios($rowFS[0], $precio, $porcentaje);
 		}
@@ -1358,7 +1358,7 @@ $marca = $_POST['marca'];
 
 		$resUser = $serviciosReferencias->traerEspecificacionesproducto();
 		$cad = 'user';
-		while ($rowFS = mysql_fetch_array($resUser)) {
+		while ($rowFS = mysqli_fetch_array($resUser)) {
 			if (isset($_POST[$cad.$rowFS[0]])) {
 				$serviciosReferencias->insertarProductoespecificaciones($res,$rowFS[0],'1');
 			}
@@ -1407,7 +1407,7 @@ $activo = 0;
 		$resEliminar = $serviciosReferencias->eliminarProductoespecificacionesPorProducto($id);
 		$resUser = $serviciosReferencias->traerEspecificacionesproducto();
 		$cad = 'user';
-		while ($rowFS = mysql_fetch_array($resUser)) {
+		while ($rowFS = mysqli_fetch_array($resUser)) {
 			if (isset($_POST[$cad.$rowFS[0]])) {
 				$serviciosReferencias->insertarProductoespecificaciones($id,$rowFS[0],'1');
 			}
@@ -1579,7 +1579,7 @@ function traerDetallepedidoPorPedido($serviciosReferencias) {
 	$cadRows='';
 	$total = 0;
 	
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = mysqli_fetch_array($res)) {
 		$total += $row['total'];
 			$cadsubRows = '';
 			$cadRows = $cadRows.'
@@ -1789,7 +1789,7 @@ $res = $serviciosReferencias->insertarCategorias($descripcion,$esegreso,$activo)
 if ((integer)$res > 0) {
 	$resUser = $serviciosReferencias->traerGrupoespecificaiones();
 	$cad = 'user';
-	while ($rowFS = mysql_fetch_array($resUser)) {
+	while ($rowFS = mysqli_fetch_array($resUser)) {
 		if (isset($_POST[$cad.$rowFS[0]])) {
 			$serviciosReferencias->insertarCategoriasespecificacion($res,$rowFS[0]);
 		}
@@ -1822,7 +1822,7 @@ if ($res == true) {
 	$serviciosReferencias->eliminarCategoriasespecificacionPorCatgoria($id);
 	$resUser = $serviciosReferencias->traerGrupoespecificaiones();
 	$cad = 'user';
-	while ($rowFS = mysql_fetch_array($resUser)) {
+	while ($rowFS = mysqli_fetch_array($resUser)) {
 		if (isset($_POST[$cad.$rowFS[0]])) {
 			$serviciosReferencias->insertarCategoriasespecificacion($id,$rowFS[0]);
 		}
@@ -1843,7 +1843,7 @@ function eliminarCategorias($serviciosReferencias) {
 	$res = $serviciosReferencias->eliminarCategorias($id); 
 
 	// doy de baja a todos los productos correspondientes a esta categoria
-	while ($row = mysql_fetch_array($resR)) {
+	while ($row = mysqli_fetch_array($resR)) {
 		$serviciosReferencias->eliminarProductos($row[0]);		
 	}
 	echo $res; 
@@ -1904,7 +1904,7 @@ function eliminarSubCategorias($serviciosReferencias) {
 
 	// doy de baja a todos los productos correspondientes a esta categoria
 	/*
-	while ($row = mysql_fetch_array($resR)) {
+	while ($row = mysqli_fetch_array($resR)) {
 		$serviciosReferencias->eliminarProductos($row[0]);		
 	}
 	*/
@@ -1966,7 +1966,7 @@ function eliminarSubsubCategorias($serviciosReferencias) {
 
 	// doy de baja a todos los productos correspondientes a esta categoria
 	/*
-	while ($row = mysql_fetch_array($resR)) {
+	while ($row = mysqli_fetch_array($resR)) {
 		$serviciosReferencias->eliminarProductos($row[0]);		
 	}
 	*/
@@ -1995,7 +1995,7 @@ function borrarMasivoCategorias($serviciosReferencias) {
 				
 				$res = $serviciosReferencias->eliminarCategorias($idProducto); 
 				// doy de baja a todos los productos correspondientes a esta categoria
-				while ($row = mysql_fetch_array($resR)) {
+				while ($row = mysqli_fetch_array($resR)) {
 					$serviciosReferencias->eliminarProductos($row[0]);		
 				}
 			}
@@ -2360,7 +2360,7 @@ function graficosProductosConsumo($serviciosReferencias) {
 function toArray($query)
 {
     $res = array();
-    while ($row = @mysql_fetch_array($query)) {
+    while ($row = @mysqli_fetch_array($query)) {
         $res[] = $row;
     }
     return $res;

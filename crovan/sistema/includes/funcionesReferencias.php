@@ -3278,8 +3278,7 @@ function query_p($sql,$accion) {
 	    return false;
 	}
 
-
-	function query_p($sql,$accion) {
+	function query($sql,$accion) {
 		
 		
 		
@@ -3304,8 +3303,8 @@ function query_p($sql,$accion) {
 		//mysql_select_db($database);
 		
 		$error = 0;
-		mysqli_query("BEGIN");
-		$result=mysqli_query($sql,$conex);
+		mysqli_query($conex,"BEGIN");
+		$result=mysqli_query($conex,$sql);
 		if ($accion && $result) {
 			$result = mysql_insert_id();
 		}
@@ -3313,11 +3312,11 @@ function query_p($sql,$accion) {
 			$error=1;
 		}
 		if($error==1){
-			mysqli_query("ROLLBACK");
+			mysqli_query($conex,"ROLLBACK");
 			return false;
 		}
 		 else{
-			mysqli_query("COMMIT");
+			mysqli_query($conex,"COMMIT");
 			return $result;
 		}
 

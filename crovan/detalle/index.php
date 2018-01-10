@@ -17,18 +17,18 @@ $idProducto = $_GET['prod'];
 
 $resProd = $serviciosReferencias->traerProductosPorIdWeb($idProducto);
 
-$nombre = mysql_result($resProd,0,'nombre');
-$detalle = mysql_result($resProd,0,'descripcion');
-$precioventa = mysql_result($resProd,0,'precioventa');
-$codigo = mysql_result($resProd,0,'codigo');
-$imagenproducto = mysql_result($resProd,0,'imagenproducto');
+$nombre = $serviciosReferencias->mysqli_result($resProd,0,'nombre');
+$detalle = $serviciosReferencias->mysqli_result($resProd,0,'descripcion');
+$precioventa = $serviciosReferencias->mysqli_result($resProd,0,'precioventa');
+$codigo = $serviciosReferencias->mysqli_result($resProd,0,'codigo');
+$imagenproducto = $serviciosReferencias->mysqli_result($resProd,0,'imagenproducto');
 
 
 $resProductos = $serviciosReferencias->traerProductos();
 
 $cadProductos = '';
     $cadProductos .= '<option value="0"> </option>';
-    while ($row = mysql_fetch_array($resProductos)) {
+    while ($row = mysqli_fetch_array($resProductos)) {
 
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
@@ -41,18 +41,18 @@ $cadProductos = '';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/material-icons.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/animate.css">
-    <link href="assets/css/hover.css" rel="stylesheet">  
-    <link href="assets/css/imagehover.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/animate.css">
+    <link href="../assets/css/hover.css" rel="stylesheet">  
+    <link href="../assets/css/imagehover.min.css" rel="stylesheet"> 
 
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/liquidmetal.js" type="text/javascript"></script>
-    <script src="assets/js/jquery.flexselect.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="assets/css/flexselect.css" type="text/css" media="screen" />
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/liquidmetal.js" type="text/javascript"></script>
+    <script src="../assets/js/jquery.flexselect.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../assets/css/flexselect.css" type="text/css" media="screen" />
 </head>
 
 <body>
@@ -60,7 +60,7 @@ $cadProductos = '';
 <nav class="navbar navbar-default">
 <div class="col-xs-3">
     <div class="col-xs-12">
-        <img src="assets/img/logonav.png" class="img-responsive pull-right imgnavbar">
+        <img src="../assets/img/logonav.png" class="img-responsive pull-right imgnavbar">
     </div>
 </div>
 <div class="col-xs-6">
@@ -76,8 +76,8 @@ $cadProductos = '';
     </div>
 </div>
 <div class="col-xs-3">
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
+    <a href="../login/"><div class="col-xs-6 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
+    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
 </div>
 </nav>
 </div>
@@ -197,9 +197,9 @@ $cadProductos = '';
                 </div>                                             
                </div>
             <div class="row text-center mpridprod">
-                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="assets/img/miniprod.png"></a>
-                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="assets/img/miniprod.png"></a>
-                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="assets/img/miniprod.png"></a>
+                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="../assets/img/miniprod.png"></a>
+                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="../assets/img/miniprod.png"></a>
+                           <a href="#" class="hvr-float" title=""><img claass="img-responsive " src="../assets/img/miniprod.png"></a>
 
             </div>               
            </div> 
@@ -252,19 +252,19 @@ $cadProductos = '';
             <div class="row">
                 <div class="col-xs-2"></div>
                 <div class="col-lg-offset-0 col-xs-2 text-center">
-                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png"></a>
+                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png"></a>
                     <p class="text-center">Detalle producto</p>
                 </div>
                 <div class="col-xs-2">
-                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png"></a>
+                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png"></a>
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2">
-                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png"></a>
+                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png"></a>
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2">
-                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="assets/img/b3.png"></a>
+                    <a href=""><img class="img-circle img-responsive center-block hvr-float" src="../assets/img/b3.png"></a>
                     <p class="text-center">Detalle producto</p>                    
                 </div>
                 <div class="col-xs-2"></div>
@@ -277,11 +277,11 @@ $cadProductos = '';
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
         </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery.easing.min.js"></script>
-    <script src="assets/js/scrolling-nav.js"></script>
-    <script src="assets/js/wow.js"></script>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.easing.min.js"></script>
+    <script src="../assets/js/scrolling-nav.js"></script>
+    <script src="../assets/js/wow.js"></script>
     <script>
      new WOW().init();
     </script>      

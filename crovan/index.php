@@ -15,7 +15,7 @@ $resProductos = $serviciosReferencias->traerProductos();
 
 $cadProductos = '';
     $cadProductos .= '<option value="0"> </option>';
-    while ($row = mysql_fetch_array($resProductos)) {
+    while ($row = mysqli_fetch_array($resProductos)) {
 
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
@@ -80,21 +80,21 @@ $cadProductos = '';
             <ul class="nav nav-pills nav-justified">
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=1">Barriles <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="listar.php?cat=1">Entrar</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=1">Entrar</a></li>
                         <li role="presentation"><a href="#">Second Item</a></li>
                         <li role="presentation"><a href="#">Third Item</a></li>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=2">MiniKeg <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="listar.php?cat=2">Entrar</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=2">Entrar</a></li>
                         <li role="presentation"><a href="#">Second Item</a></li>
                         <li role="presentation"><a href="#">Third Item</a></li>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=3">Accesorios <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="listar.php?cat=3">Entrar</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=3">Entrar</a></li>
                         <li role="presentation"><a href="#">Second Item</a></li>
                         <li role="presentation"><a href="#">Third Item</a></li>
                     </ul>

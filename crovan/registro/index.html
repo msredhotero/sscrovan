@@ -46,6 +46,10 @@
         padding: 10px 40px;
         font-weight: 600;
     }
+        .help-blok {
+            color: red;
+            font-size: 10px;
+        }
     </style>
 </head>
 
@@ -89,25 +93,30 @@
               <div class="form-group">
                 
                 <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="E-MAIL">
+                <div class="help-blok">* Campo obligatorio</div>
               </div>
               <div class="form-group">
                 
                 <input type="text" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
+                <div class="help-blok">* Campo obligatorio</div>
               </div>
 
               <div class="form-group">
                 
                 <input type="text" class="form-control" id="txtPassword2" aria-describedby="emailHelp" placeholder="CONTRASEÑA DE NUEVO">
+                <div class="help-blok">* Campo obligatorio</div>
               </div>
 
               <div class="form-group">
                 
                 <input type="text" class="form-control" id="txtNombre" aria-describedby="emailHelp" placeholder="NOMBRE">
+                <div class="help-blok">* Campo obligatorio</div>
               </div>
 
               <div class="form-group">
                 
                 <input type="text" class="form-control" id="txtApellido" aria-describedby="emailHelp" placeholder="APELLIDO">
+                <div class="help-blok">* Campo obligatorio</div>
               </div>
 
 
@@ -210,11 +219,125 @@
 
 
           }
-
-          $('.registrar').click(function(){
-            registrar($('#txtEmail').val(),$('#txtPassword').val(),$('#txtNombre').val(),$('#txtApellido').val(),$('#txtPassword2').val(),$('#txtTelefono').val());
-          });
+        
+            
+        $("#txtEmail").click(function(event) {
+            $("#txtEmail").removeClass("alert alert-danger");
+            $("#txtEmail").attr('placeholder','Ingrese el email');
         });
+
+        $("#txtEmail").change(function(event) {
+         $("#txtEmail").removeClass("alert alert-danger");
+         $("#txtEmail").attr('placeholder','Ingrese el email');
+        });
+            
+            
+        $("#txtApellido").click(function(event) {
+            $("#txtApellido").removeClass("alert alert-danger");
+            $("#txtApellido").attr('placeholder','Ingrese el Apellido');
+        });
+
+        $("#txtApellido").change(function(event) {
+            $("#txtApellido").removeClass("alert alert-danger");
+            $("#txtApellido").attr('placeholder','Ingrese el Apellido');
+        });
+            
+        
+        $("#txtNombre").click(function(event) {
+            $("#txtNombre").removeClass("alert alert-danger");
+            $("#txtNombre").attr('placeholder','Ingrese el Nombre');
+        });
+
+        $("#txtNombre").change(function(event) {
+            $("#txtNombre").removeClass("alert alert-danger");
+            $("#txtNombre").attr('placeholder','Ingrese el Nombre');
+        });
+            
+        $("#txtPassword").click(function(event) {
+            $("#txtPassword").removeClass("alert alert-danger");
+            $("#txtPassword").attr('placeholder','Ingrese el Contraseña');
+        });
+
+        $("#txtPassword").change(function(event) {
+            $("#txtPassword").removeClass("alert alert-danger");
+            $("#txtPassword").attr('placeholder','Ingrese la Contraseña');
+        });
+            
+            
+        $("#txtPassword2").click(function(event) {
+            $("#txtPassword2").removeClass("alert alert-danger");
+            $("#txtPassword2").attr('placeholder','Ingrese el Contraseña de Nuevo');
+        });
+
+        $("#txtPassword2").change(function(event) {
+            $("#txtPassword2").removeClass("alert alert-danger");
+            $("#txtPassword2").attr('placeholder','Ingrese la Contraseña de Nuevo');
+        });
+            
+            
+        function validar() {
+            var $error = '';
+            
+            if ($('#txtPassword').val() == "") {
+                $error = "Es obligatorio el campo Contraseña.";
+                $('#txtPassword').addClass("alert alert-danger");
+                $('#txtPassword').attr('placeholder',$error);
+            }
+            
+            if ($('#txtPassword2').val() == "") {
+                $error = "Es obligatorio el campo Contraseña de Nuevo.";
+                $('#txtPassword2').addClass("alert alert-danger");
+                $('#txtPassword2').attr('placeholder',$error);
+            }
+            
+            if ($('#txtPassword2').val() != $('#txtPassword').val()) {
+                $error = "Las contraseñas son diferentes.";
+                $('#txtPassword2').addClass("alert alert-danger");
+                $('#txtPassword2').attr('placeholder',$error);
+            }
+            
+            if ($('#txtNombre').val() == "") {
+                $error = "Es obligatorio el campo Nombre.";
+                $('#txtNombre').addClass("alert alert-danger");
+                $('#txtNombre').attr('placeholder',$error);
+            }
+            
+            
+            if ($('#txtApellido').val() == "") {
+                $error = "Es obligatorio el campo Apellido.";
+                $('#txtApellido').addClass("alert alert-danger");
+                $('#txtApellido').attr('placeholder',$error);
+                
+            }
+            
+            
+            if ($('#txtEmail').val() == "") {
+                $error = "Es obligatorio el campo Email.";
+                $('#txtEmail').addClass("alert alert-danger");
+                $('#txtEmail').attr('placeholder',$error);
+                
+            }
+            
+            var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+            
+            if( !emailReg.test( $('#txtEmail').val() ) ) {
+                $error = "El E-Mail ingresado es inválido.";
+                $('#txtEmail').addClass("alert alert-danger");
+                $('#txtEmail').attr('placeholder',$error);
+                
+                
+            }
+            
+            return $error;
+        }
+
+        $('.registrar').click(function(){
+           if (validar() == '') {
+               registrar($('#txtEmail').val(),$('#txtPassword').val(),$('#txtNombre').val(),$('#txtApellido').val(),$('#txtPassword2').val(),$('#txtTelefono').val());
+           }
+               
+        });
+    });
     </script>      
 </body>
 
