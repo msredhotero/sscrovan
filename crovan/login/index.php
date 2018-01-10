@@ -61,7 +61,8 @@
     
 </div>
 <div class="col-xs-5">
-    <div class="col-xs-12 mp-navbar">¿TODAVIA NO TENES TU USUARIO? <a href="../registro/" style="color:#00F;">INGRESA ACA</a> <img src="../assets/img/iniciarsesion.png"></div>
+    <div class="col-xs-12 mp-navbar ingresoY"><img src="../assets/img/iniciarsesion.png"> Bienvenido: <span class="usuarioLogueado"></span></div>
+    <div class="col-xs-12 mp-navbar ingresoN">¿TODAVIA NO TENES TU USUARIO? <a href="../registro/" style="color:#00F;">INGRESA ACA</a> <img src="../assets/img/iniciarsesion.png"></div>
 </div>
 </nav>
 </div>
@@ -92,9 +93,11 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">CONTRASEÑA</label>
-                <input type="text" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
+                <input type="password" class="form-control" id="txtPassword" aria-describedby="emailHelp" placeholder="CONTRASEÑA">
               </div>
-
+                <div class="form-group">
+                  <div class="error"></div>
+                </div>
               <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec;">
                 <label for="exampleInputPassword1">No cerrar sessión</label>
                 <input type="checkbox" class="form-check-input" style="margin: 0px 25px 0px 7px;">
@@ -167,7 +170,104 @@
         myScaleFunction();
 
         window.addEventListener('resize', myScaleFunction);
-    </script>       
+    </script> 
+    
+          <script type="text/javascript">
+        $(document).ready(function(){
+          function ingresar(email, password) {
+            $.ajax({
+                data:  {email: email, 
+                        password: password, 
+                        accion: 'ingresarCrovan'},
+                url:   '../sistema/ajax/ajax.php',
+                type:  'post',
+                beforeSend: function () {
+
+                },
+                success:  function (response) {
+                    if (response == '') {
+                        $('.error').html('Se logueo correctamente.');
+                        $('.error').removeClass('alert alert-danger');
+                        $('.error').addClass('alert alert-success');
+                        
+                    } else {
+                        $('.error').html(response);    
+                        $('.error').removeClass('alert alert-success');
+                        $('.error').addClass('alert alert-danger');
+                    }
+                    
+
+                }
+            });
+
+
+          }
+        
+            
+        $("#txtEmail").click(function(event) {
+            $("#txtEmail").removeClass("alert alert-danger");
+            $("#txtEmail").attr('placeholder','Ingrese el email');
+        });
+
+        $("#txtEmail").change(function(event) {
+         $("#txtEmail").removeClass("alert alert-danger");
+         $("#txtEmail").attr('placeholder','Ingrese el email');
+        });
+            
+            
+       
+            
+        $("#txtPassword").click(function(event) {
+            $("#txtPassword").removeClass("alert alert-danger");
+            $("#txtPassword").attr('placeholder','Ingrese el Contraseña');
+            $('#errorP').html('');
+        });
+
+        $("#txtPassword").change(function(event) {
+            $("#txtPassword").removeClass("alert alert-danger");
+            $("#txtPassword").attr('placeholder','Ingrese la Contraseña');
+            $('#errorP').html('');
+        });
+ 
+            
+        function validar() {
+            var $error = '';
+            
+            if ($('#txtPassword').val() == "") {
+                $error = "Es obligatorio el campo Contraseña.";
+                $('#errorP').html($error);
+            }
+            
+          
+            
+            if ($('#txtEmail').val() == "") {
+                $error = "Es obligatorio el campo Email.";
+                $('#txtEmail').addClass("alert alert-danger");
+                $('#txtEmail').attr('placeholder',$error);
+                
+            }
+            
+            var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+            
+            if( !emailReg.test( $('#txtEmail').val() ) ) {
+                $error = "El E-Mail ingresado es inválido.";
+                $('#txtEmail').addClass("alert alert-danger");
+                $('#txtEmail').attr('placeholder',$error);
+                
+                
+            }
+            
+            return $error;
+        }
+
+        $('.ingresar').click(function(){
+           if (validar() == '') {
+               ingresar($('#txtEmail').val(),$('#txtPassword').val());
+           }
+               
+        });
+    });
+    </script>        
 </body>
 
 </html>
