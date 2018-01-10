@@ -1,3 +1,5 @@
+
+
 input.center-block{
   width:80%;
   border-radius:8px;
@@ -24,7 +26,7 @@ div.row #barra{
 }
 
 div#barraup.row{
-  background-color:#939393;
+  background-color:#f5f5f5;
 }
 
 i.fa.fa-facebook-square{
@@ -43,21 +45,21 @@ i.fa.fa-envelope-o{
 }
 
 div#barraup1.row.text-center{
-  background-color:black;
-  color:#fff5e4;
+  background-color:#f5f5f5;
+  color:#858585;
 }
 
 ul.nav.nav-pills.nav-justified{
-  background-color:black;
-  color:white;
+  background-color:#f5f5f5;
+  color:#858585;
 }
 
 a{
-  color:#fff5e4;
+  color: #858585;
 }
 
 div.col-md-12{
-  color:white;
+  color:#858585;
 }
 
 p.tex-center{
@@ -97,7 +99,7 @@ body{
   margin-top: 25px;
 }
 
-#producto
+/*#producto
 {
       background: url('../img/header-accesorios.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
@@ -106,9 +108,59 @@ body{
     -o-background-size: cover;
     color: white;
 }
-
+*/
  .mprprod
  {
   margin-bottom: 60px;
 
  }
+
+
+
+ /*  NAV BAR.  */
+.mp-navbar
+{
+  margin-top: 15px;
+}
+.imgnavbar
+{
+  padding: 5px;
+}
+.mprprodlist
+{
+  margin-top: 50px;
+}
+.recuadroprod
+{
+  border: solid 2px;
+  border-radius: 15px;
+}
+.pprod
+{
+  padding: 15px;
+}
+.cnaranj
+{
+  color: #ff8501;
+}
+.mprfprod
+{
+  margin-top: 75px;
+}
+.bbus
+{
+  width: 90%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
