@@ -123,10 +123,10 @@ $serviciosReferencias       = new ServiciosReferencias();
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-1">
+        <div class="col-xs-2">
             
         </div>
-        <div class="col-xs-10" style="margin-top:20px;">
+        <div class="col-xs-8" style="margin-top:20px;">
 
             <form>
                <?php
@@ -149,31 +149,25 @@ $serviciosReferencias       = new ServiciosReferencias();
                     <img src="../<?php echo $imagen; ?>" style="max-height: 110px;" class="img-responsive hvr-grow">
                 </div>
                 <div class="col-xs-10" style="margin-top:20px; border-bottom:3px solid #ff8601; padding-bottom:22px;">
-                    <div class="col-xs-5" style="margin-top:20px;">
+                    <div class="col-xs-6" style="margin-top:20px;">
                         <h4><?php echo $nombre; ?></h4>
                         <p><?php echo substr($descripcion,0,30); ?></p>
                     </div>
-                    <div class="col-xs-3" style="margin-top:20px;">
+                    <div class="col-xs-4" style="margin-top:20px;">
                         <ul class="list-inline">
+
                             <li>
-                                <button type="button" class="btn btn-default quitarCantidad" id="<?php echo $row; ?>"><span class="glyphicon glyphicon-minus-sign"></span></button>
-                            </li>
-                            <li>
-                                <input style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $_SESSION['cantidad_carrito_crovan'][$i]; ?>"/>
+                                <input readonly style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $_SESSION['cantidad_carrito_crovan'][$i]; ?>"/>
                                 
                             </li>
-                            <li>
-                                <button type="button" class="btn btn-default agregarCantidad" id="<?php echo $row; ?>"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                            </li>
+
                         </ul>
                     </div>
                     <div class="col-xs-2" style="margin-top:20px;">
                         <h4>$ <span class="precio" id="precio<?php echo $row; ?>"><?php echo ($precio * $_SESSION['cantidad_carrito_crovan'][$i]); ?></span></h4>
                         <input style="width:50px; text-align: center; padding:4px;" type="hidden" readonly id="hprecio<?php echo $row; ?>" name="hprecio" value="<?php echo $precio; ?>"/>
                     </div>
-                    <div class="col-xs-2" style="margin-top:20px;">
-                        <h5 style="color:#2E64FE; cursor: pointer;" class="quitarProducto" id="<?php echo $row; ?>">ELIMINAR</h5>
-                    </div>
+
                 </div>
                 </div>
                 <?php
@@ -188,11 +182,9 @@ $serviciosReferencias       = new ServiciosReferencias();
                 </div>
                 <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec; height:120px;">
                     <div class="col-xs-6" style="margin-top:20px;">
-                        <button type="button" class="btn-crovan tienda">TIENDA</button>
+                        <button type="button" class="btn-crovan tienda">CONFIRMAR COMPRA</button>
                     </div>
-                    <div class="col-xs-6" style="margin-top:20px;">
-                        <button type="button" class="btn-crovan logout">SALIR</button>
-                    </div>
+
                     
 
                 </div>
@@ -203,39 +195,28 @@ $serviciosReferencias       = new ServiciosReferencias();
                     }
                 ?>
                 
-                <div class="row" style="margin-top:30px; ">
+                <div class="row" style="margin-top:30px;">
                     <div class="col-xs-3">
                     
                     </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px; border-bottom:2px solid #BCBCBC;">
-                        <h4 style="color:#ABABAB;">SUBTOTAL <span class="total pull-right" id="subtotal"><?php echo $total; ?></span></h4>
+                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px;  border:2px solid #BCBCBC;">
+                        <h4 style="color:#ABABAB;">TOTAL <span class="total pull-right" id="subtotal"><?php echo $total; ?></span></h4>
                     </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;">
-                        <button type="button" class="btn-crovan confirmar">FINALIZAR COMPRA</button>
+                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;  border:2px solid #BCBCBC;">
+                        <button type="button" class="btn-crovan2 confirmar">FINALIZAR COMPRA</button>
                     </div>
                     <div class="col-xs-3">
                     
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-3">
-                    
-                    </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px;">
-                        <h4>TOTAL <span class="total pull-right" id="total"><?php echo $total; ?></span></h4>
-                    </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;">
-                        <button type="button" class="btn-crovan2 tienda">CONTINUAR COMPRANDO</button>
-                    </div>
-                    <div class="col-xs-3">
-                    
-                    </div>
+
                 </div>
               
               
             </form>
         </div>
-        <div class="col-xs-1">
+        <div class="col-xs-2">
             
         </div>
     </div>
