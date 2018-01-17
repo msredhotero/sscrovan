@@ -41,6 +41,25 @@ switch ($accion) {
         logoutCrovan($serviciosUsuarios);
         break;
 
+/* carrito de compra */
+    case 'agregarCarrito':
+        agregarCarrito($serviciosReferencias);
+        break;
+    case 'modificarCantidadCarrito':
+        modificarCantidadCarrito($serviciosReferencias);
+        break;
+    case 'eliminarCarrito':
+        eliminarCarrito($serviciosReferencias);
+        break;
+    case 'modificarCantidadTienda':
+        modificarCantidadTienda($serviciosReferencias);
+        break;
+    case 'quitarProductoTienda':
+        quitarProductoTienda($serviciosReferencias);
+        break;
+        
+/* fin carrito de compra */
+        
 case 'insertarConfiguracion':
 insertarConfiguracion($serviciosReferencias);
 break;
@@ -404,6 +423,62 @@ case 'traerProductosPorCategoriaEspecificacionWeb':
 
 /* Fin */
 
+
+
+/* carrito de compra */
+    function agregarCarrito($serviciosReferencias) {
+        $idProducto = $_POST['idProducto'];
+        $cantidad = $_POST['cantidad'];
+        $precioUnit = $_POST['precioUnit'];
+        $idUsuario = $_POST['idUsuario'];
+        
+        $res = $serviciosReferencias->agregarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario);
+        
+        echo $res;
+    }
+
+    function modificarCantidadCarrito($serviciosReferencias) {
+        $idProducto = $_POST['idProducto'];
+        $cantidad = $_POST['cantidad'];
+        $precioUnit = $_POST['precioUnit'];
+        $idUsuario = $_POST['idUsuario'];
+        
+        $res = $serviciosReferencias->modificarCantidadCarrito($idProducto, $cantidad, $precioUnit, $idUsuario);
+        
+        echo $res;
+    }
+    function eliminarCarrito($serviciosReferencias) {
+        $idProducto = $_POST['idProducto'];
+        $cantidad = $_POST['cantidad'];
+        $precioUnit = $_POST['precioUnit'];
+        $idUsuario = $_POST['idUsuario'];
+        
+        $res = $serviciosReferencias->eliminarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario);
+        
+        echo $res;
+    }
+
+    function modificarCantidadTienda($serviciosReferencias) {
+        $idProducto = $_POST['idProducto'];
+        $operacion = $_POST['operacion'];
+        
+        if ($operacion == 'I') {
+            $res = $serviciosReferencias->modificarCantidad($idProducto, 1);
+        } else {
+            $res = $serviciosReferencias->modificarCantidad($idProducto, -1);
+        }
+        
+        echo $res;
+    }
+
+    function quitarProductoTienda($serviciosReferencias) {
+        $idProducto = $_POST['idProducto'];
+        
+        $res = $serviciosReferencias->quitarProductoTienda($idProducto);
+        
+        echo $res;
+    }
+/* fin carrito de compra */
 
 /*				web  						*/
 function traerProductosPorCategoriaWeb($serviciosReferencias) {
@@ -2468,6 +2543,10 @@ function ingresarCrovan($serviciosUsuarios) {
 	//$idempresa  =	$_POST['idempresa'];
 	
 	echo $serviciosUsuarios->loginCrovan($email,$pass);
+}
+
+function logoutCrovan($serviciosUsuarios) {
+    echo $serviciosUsuarios->loginCrovan($email,$pass);
 }
 
 

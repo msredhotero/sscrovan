@@ -70,8 +70,8 @@ $cadProductos = '';
         </div>
         <div class="col-xs-4">
             <div class="row">
-                <a href="#" title=""><div class="col-xs-6 "><i class="fa fa-shopping-cart center-block"> </i><h5 class="fpbsup text-left"> Carrito</h5></div></a>
-                <a href="#" title=""><div class="col-xs-6 center-block"><i class="fa fa-user text-center"></i><h5 class="fpbsup text-left">Iniciar Sesión</h5></div></a>
+                <a href="carrito/" title=""><div class="col-xs-6 "><i class="fa fa-shopping-cart center-block"> </i><h5 class="fpbsup text-left"> Carrito</h5></div></a>
+                <a href="login/" title=""><div class="col-xs-6 center-block"><i class="fa fa-user text-center"></i><h5 class="fpbsup text-left">Iniciar Sesión</h5></div></a>
             </div>
         </div>
     </div>

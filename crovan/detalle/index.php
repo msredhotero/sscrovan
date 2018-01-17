@@ -1,12 +1,20 @@
 <?php
 
-
-
 include ('../sistema/includes/funcionesUsuarios.php');
 include ('../sistema/includes/funciones.php');
 include ('../sistema/includes/funcionesHTML.php');
 include ('../sistema/includes/funcionesReferencias.php');
 
+
+session_start();
+
+
+if (!isset($_SESSION['id_crovan']))
+{
+	$usuario = '';
+} else {
+    $usuario = $_SESSION['nombre_crovan'];
+}
 
 $serviciosUsuarios          = new ServiciosUsuarios();
 $serviciosFunciones         = new Servicios();
@@ -53,6 +61,7 @@ $cadProductos = '';
     <script src="../assets/js/liquidmetal.js" type="text/javascript"></script>
     <script src="../assets/js/jquery.flexselect.js" type="text/javascript"></script>
     <link rel="stylesheet" href="../assets/css/flexselect.css" type="text/css" media="screen" />
+    <script src="../sistema/js/jquery.number.min.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -76,8 +85,18 @@ $cadProductos = '';
     </div>
 </div>
 <div class="col-xs-3">
-    <a href="../login/"><div class="col-xs-6 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
+    <?php
+        if (!isset($_SESSION['id_crovan'])) {
+    ?>
+    <a href="../login/"><div class="col-xs-8 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
+    <?php
+        } else {
+    ?>
+    <a href=""><div class="col-xs-8 mp-navbar"><img src="../assets/img/iniciarsesion.png"> Bienvenido: <span class="usuarioLogueado"><?php echo $usuario; ?></span></div></a>
+    <?php
+        }
+    ?>
+    <a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>
 </div>
 </nav>
 </div>
@@ -226,8 +245,28 @@ $cadProductos = '';
 
                    </div>
                    <div class="col-xs-12">
-                        <button  type="button" class="btn btn-warning ">
-                          <span class="glyphicon glyphicon-shopping-cart " aria-hidden="true"></span> Comprar
+
+                       <div class="col-xs-6" style="margin-bottom:10px;">
+                           <label for="cantidad" class="label-control">Cantidad</label>
+                       </div>
+                       <div class="col-xs-4" style="margin-bottom:10px;">
+                           <select id="cantidad" name="cantidad" class="form-control">
+                               <option value="1">1</option>
+                               <option value="2">2</option>
+                               <option value="3">3</option>
+                               <option value="4">4</option>
+                               <option value="5">5</option>
+                               <option value="6">6</option>
+                               <option value="7">7</option>
+                               <option value="8">8</option>
+                               <option value="9">9</option>
+                               <option value="10">10</option>
+                           </select>
+                       </div>
+
+                        
+                        <button  type="button" class="btn btn-warning agregarCarrito">
+                          <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Añadir al Carrito
                         </button>                       
                    </div>
                </div>
@@ -277,14 +316,39 @@ $cadProductos = '';
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
         </div>
     </div>
+    
     <script src="../assets/js/jquery.min.js"></script>
     <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.easing.min.js"></script>
+    
     <script src="../assets/js/scrolling-nav.js"></script>
     <script src="../assets/js/wow.js"></script>
     <script>
      new WOW().init();
-    </script>      
+    </script> 
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.agregarCarrito').click(function() {
+                alert('asdasd');
+                $.ajax({
+                    data:  {idProducto: <?php echo $idProducto; ?>, 
+                            cantidad: $('#cantidad').val(), 
+                            precioUnit: <?php echo $precioventa; ?>, 
+                            idUsuario: '<?php echo $usuario; ?>', 
+                            accion: 'agregarCarrito'},
+                    url:   '../sistema/ajax/ajax.php',
+                    type:  'post',
+                    beforeSend: function () {
+
+                    },
+                    success:  function (response) {
+                        $('.cantidadCarrito').html(parseInt($('.cantidadCarrito').html()) + parseInt(response));
+
+                    }
+                }); 
+            });
+        });
+    </script>
 </body>
 
 </html>

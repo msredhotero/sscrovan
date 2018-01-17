@@ -243,6 +243,148 @@ function crearDirectorioPrincipal($dir) {
 
 /* fin archivos */
 
+/* para el carrito de compra */
+    function agregarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
+        session_start();
+        $error = 0;
+		if (isset($_SESSION['idProducto_carrito_crovan'])) {
+            
+            if (in_array($idProducto, $_SESSION['idProducto_carrito_crovan'])) {
+                $this->modificarCantidadCarritoSinSession($idProducto, $cantidad, $precioUnit, $idUsuario=null);
+                $error = 0;
+            } else {
+                array_push($_SESSION['idProducto_carrito_crovan'], $idProducto);
+                array_push($_SESSION['cantidad_carrito_crovan'], $cantidad);
+                array_push($_SESSION['precio_carrito_crovan'], $precioUnit);
+                array_push($_SESSION['idUsuario_carrito_crovan'], $idUsuario);
+                $error = 1;
+            }
+            
+        } else {
+            $_SESSION['idProducto_carrito_crovan'] = array();
+            $_SESSION['cantidad_carrito_crovan'] = array();
+            $_SESSION['precio_carrito_crovan'] = array();
+            $_SESSION['idUsuario_carrito_crovan'] = array();
+            
+            array_push($_SESSION['idProducto_carrito_crovan'], $idProducto);
+            array_push($_SESSION['cantidad_carrito_crovan'], $cantidad);
+            array_push($_SESSION['precio_carrito_crovan'], $precioUnit);
+            array_push($_SESSION['idUsuario_carrito_crovan'], $idUsuario);
+            $error = 1;
+        }
+        
+        return $error;
+        
+    }
+    
+    function modificarCantidadCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
+        session_start();
+        $error = '';
+        //busco la posicion en el array
+        $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
+        
+        $_SESSION['cantidad_carrito_crovan'][$posItem] = $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem];
+        
+        if ($error == '') {
+            return '';
+        } else {
+            return $error;
+        }
+    }
+    
+    
+    function modificarCantidadCarritoSinSession($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
+
+        $error = '';
+        //busco la posicion en el array
+        $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
+        
+        $_SESSION['cantidad_carrito_crovan'][$posItem] = $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem];
+        
+        if ($error == '') {
+            return '';
+        } else {
+            return $error;
+        }
+    }
+    
+    
+    function eliminarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
+        session_start();
+        
+        $error = '';
+        
+        //busco la posicion en el array
+        $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
+        
+        unset($_SESSION['idProducto_carrito_crovan'][$posItem]);
+        unset($_SESSION['cantidad_carrito_crovan'][$posItem]);
+        unset($_SESSION['precio_carrito_crovan'][$posItem]);
+        unset($_SESSION['idUsuario_carrito_crovan'][$posItem]);
+        
+        
+        if ($error == '') {
+            return '';
+        } else {
+            return $error;
+        }
+    }
+    
+    function quitarProductoTienda($idProducto) {
+        
+        $error = '';
+        
+        $res = $this->eliminarCarrito($idProducto,'','','');
+        
+        if ($error == '') {
+            return '';
+        } else {
+            return $error;
+        }
+    }
+    
+    function modificarCantidad($idProducto, $cantidad) {
+        session_start();
+        
+        $error = '';
+        
+        //busco la posicion en el array
+        $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
+        
+        $_SESSION['cantidad_carrito_crovan'][$posItem] += $cantidad;
+        
+        if ($error == '') {
+            return $cantidad;
+        } else {
+            return $error;
+        }
+        
+    }
+    
+    
+    function quitarCantidad($idProducto, $cantidad) {
+        session_start();
+        
+        $error = '';
+        
+        //busco la posicion en el array
+        $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
+        
+        $_SESSION['cantidad_carrito_crovan'][$posItem] -= 1;
+        
+        if ($error == '') {
+            return -1;
+        } else {
+            return $error;
+        }
+        
+    }
+    
+    
+/* fin carrito de compra */
+    
+    
+    
 /* PARA Administrativo */
 
 function yaExiste($anio,$mes) {

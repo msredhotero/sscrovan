@@ -13,7 +13,14 @@ $serviciosFunciones         = new Servicios();
 $serviciosHTML              = new ServiciosHTML();
 $serviciosReferencias       = new ServiciosReferencias();
 
+session_start();
 
+if (!isset($_SESSION['id_crovan']))
+{
+	$usuario = '';
+} else {
+    $usuario = $_SESSION['nombre_crovan'];
+}
 
 if (!isset($_GET['cat'])) {
     $idCategoria = 1;
@@ -77,8 +84,19 @@ $cadProductos = '';
     </div>
 </div>
 <div class="col-xs-3">
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
-    <a href="#"><div class="col-xs-6 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 42</span></div></a>
+    
+    <?php
+        if (!isset($_SESSION['id_crovan'])) {
+    ?>
+    <a href="../login/"><div class="col-xs-8 mp-navbar"><img src="../assets/img/iniciarsesion.png">   Iniciar Sesión</div></a>
+    <?php
+        } else {
+    ?>
+    <a href=""><div class="col-xs-8 mp-navbar"><img src="../assets/img/iniciarsesion.png"> Bienvenido: <span class="usuarioLogueado"><?php echo $usuario; ?></span></div></a>
+    <?php
+        }
+    ?>
+    <a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 0</span></div></a>
 </div>
 </nav>
 </div>
