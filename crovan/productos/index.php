@@ -38,6 +38,7 @@ $cadProductos = '';
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
 
+$items = $serviciosReferencias->devolverCantidadItemsCarrito();
 
 ?>
 <!DOCTYPE html>
@@ -96,7 +97,13 @@ $cadProductos = '';
     <?php
         }
     ?>
-    <a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge"> 0</span></div></a>
+    <?php
+    if ($items > 0) {
+        echo '<a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge lstItems"> '.$items.'</span></div></a>';
+    } else {
+        echo '<a href="#"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge lstItems"> 0</span></div></a>';
+    }
+    ?>
 </div>
 </nav>
 </div>
@@ -356,6 +363,26 @@ $cadProductos = '';
 
 
         }
+        
+        
+        function devolverItems() {
+            $.ajax({
+                data:  {accion: 'devolverItems'},
+                url:   '../sistema/ajax/ajax.php',
+                type:  'post',
+                beforeSend: function () {
+
+                },
+                success:  function (response) {
+                    $('.lstItems').html(response);
+
+                }
+            });
+
+
+        }
+        
+        devolverItems();
 
 
         function traerProductosCategoriaEspecificaciones(especificaciones) {

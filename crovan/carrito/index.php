@@ -20,6 +20,12 @@ $serviciosUsuarios          = new ServiciosUsuarios();
 $serviciosFunciones         = new Servicios();
 $serviciosHTML              = new ServiciosHTML();
 $serviciosReferencias       = new ServiciosReferencias();
+
+$items = $serviciosReferencias->devolverCantidadItemsCarrito();
+
+if ($items < 1) {
+    header('Location: ../index.php');
+}
     
 ?>
 <!DOCTYPE html>
@@ -81,6 +87,11 @@ $serviciosReferencias       = new ServiciosReferencias();
         padding: 10px 20px;
         font-weight: 600;
     }
+        
+    .modal-header {
+
+        background-color: #ff8501;
+     }
     </style>
 </head>
 
@@ -143,6 +154,8 @@ $serviciosReferencias       = new ServiciosReferencias();
                     $precio = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa');
                     $total += $serviciosReferencias->mysqli_result($resProducto,0,'precioventa') * $_SESSION['cantidad_carrito_crovan'][$i];
                     
+                    $cantidadDisponible = $serviciosReferencias->hayStockWeb($row);
+                    
                 ?>
                 <div class="row" id="col-data-<?php echo $row; ?>">
                 <div class="col-xs-2" style="margin-top:20px;">
@@ -159,11 +172,11 @@ $serviciosReferencias       = new ServiciosReferencias();
                                 <button type="button" class="btn btn-default quitarCantidad" id="<?php echo $row; ?>"><span class="glyphicon glyphicon-minus-sign"></span></button>
                             </li>
                             <li>
-                                <input style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $_SESSION['cantidad_carrito_crovan'][$i]; ?>"/>
+                                <input style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $_SESSION['cantidad_carrito_crovan'][$i]; ?>" maxlength="<?php echo $cantidadDisponible; ?>"/>
                                 
                             </li>
                             <li>
-                                <button type="button" class="btn btn-default agregarCantidad" id="<?php echo $row; ?>"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                <button type="button" class="btn btn-default agregarCantidad" id="<?php echo $row; ?>" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-plus-sign"></span></button>
                             </li>
                         </ul>
                     </div>
@@ -240,7 +253,26 @@ $serviciosReferencias       = new ServiciosReferencias();
         </div>
     </div>
 
-
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crovan Kegs Carrito</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="resultadoAgregar"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="row">
         <div class="col-xs-12 ">
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
@@ -305,7 +337,19 @@ $serviciosReferencias       = new ServiciosReferencias();
             });
             
             $('.confirmar').click(function() {
+                <?php
+                    if ($usuario == '') {
+                ?>
+                url = "../logincompra/";
+                <?php
+                    } else {
+                        
+                ?>
                 url = "../confirmacion/";
+                <?php  
+                    }
+                ?>
+                
                 $(location).delay(4000).attr('href',url);                   
             });
         
@@ -326,6 +370,12 @@ $serviciosReferencias       = new ServiciosReferencias();
                         $('#precio'+idProducto).html( parseFloat($('#'+contenedor).val()) * parseFloat($('#hprecio'+idProducto).val()) );
                         
                         actualizarTotal();
+                        
+                        if (response == 0) {
+                            $('.resultadoAgregar').html('<spam class="glyphicon glyphicon-remove-circle"></spam> Stock Insuficiente');
+                        } else {
+                            $('.resultadoAgregar').html('<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto');
+                        }
                     } else {
                         $('.error').html(response);    
                         $('.error').removeClass('alert alert-success');
@@ -357,9 +407,9 @@ $serviciosReferencias       = new ServiciosReferencias();
   
         $('.agregarCantidad').click(function() {
             prodId =  $(this).attr("id"); 
-            if ($('#cantidad'+ prodId).val() < 11) {
-                modificarCantidad(prodId,'cantidad' + prodId, 'I');
-            }
+
+            modificarCantidad(prodId,'cantidad' + prodId, 'I');
+            
         });
               
         

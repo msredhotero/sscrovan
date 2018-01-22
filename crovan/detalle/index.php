@@ -41,6 +41,10 @@ $cadProductos = '';
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
 
+$items = $serviciosReferencias->devolverCantidadItemsCarrito();
+
+$cantidadDisponible = $serviciosReferencias->hayStockWeb($idProducto);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,6 +66,13 @@ $cadProductos = '';
     <script src="../assets/js/jquery.flexselect.js" type="text/javascript"></script>
     <link rel="stylesheet" href="../assets/css/flexselect.css" type="text/css" media="screen" />
     <script src="../sistema/js/jquery.number.min.js" type="text/javascript"></script>
+    
+    <style>
+        .modal-header {
+
+            background-color: #ff8501;
+         }
+    </style>
 </head>
 
 <body>
@@ -96,7 +107,14 @@ $cadProductos = '';
     <?php
         }
     ?>
-    <a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>
+    <?php
+    if ($items > 0) {
+        echo '<a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>';
+    } else {
+        echo '<a href="#"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>';
+    }
+    ?>
+    
 </div>
 </nav>
 </div>
@@ -251,23 +269,27 @@ $cadProductos = '';
                        </div>
                        <div class="col-xs-4" style="margin-bottom:10px;">
                            <select id="cantidad" name="cantidad" class="form-control">
-                               <option value="1">1</option>
-                               <option value="2">2</option>
-                               <option value="3">3</option>
-                               <option value="4">4</option>
-                               <option value="5">5</option>
-                               <option value="6">6</option>
-                               <option value="7">7</option>
-                               <option value="8">8</option>
-                               <option value="9">9</option>
-                               <option value="10">10</option>
+                              <?php
+                               for ($i=1;$i<=$cantidadDisponible;$i++) {
+                                   echo '<option value="'.$i.'">'.$i.'</option>';
+                               }
+                               ?>
                            </select>
                        </div>
 
-                        
-                        <button  type="button" class="btn btn-warning agregarCarrito">
+                        <?php
+                        if ($cantidadDisponible > 0) {
+                        ?>
+                        <button type="button" class="btn btn-warning agregarCarrito" data-toggle="modal" data-target="#exampleModal">
                           <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Añadir al Carrito
-                        </button>                       
+                        </button>                     
+                        <?php
+                        } else {
+                        ?>
+                        <h5>No hay stock disponible</h5>
+                        <?php
+                        }
+                        ?>
                    </div>
                </div>
            </div>
@@ -310,7 +332,27 @@ $cadProductos = '';
             </div>
         </div>
     </div>
-
+    
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crovan Kegs Carrito</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="resultadoAgregar"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+   
     <div class="row">
         <div class="col-xs-12 ">
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
@@ -328,8 +370,29 @@ $cadProductos = '';
     
     <script type="text/javascript">
         $(document).ready(function(){
+            
+            function devolverItems() {
+                $.ajax({
+                    data:  {accion: 'devolverItems'},
+                    url:   '../sistema/ajax/ajax.php',
+                    type:  'post',
+                    beforeSend: function () {
+
+                    },
+                    success:  function (response) {
+                        $('.cantidadCarrito').html(response);
+
+                    }
+                });
+
+
+            }
+
+            devolverItems();
+            
+            
             $('.agregarCarrito').click(function() {
-                alert('asdasd');
+
                 $.ajax({
                     data:  {idProducto: <?php echo $idProducto; ?>, 
                             cantidad: $('#cantidad').val(), 
@@ -342,7 +405,19 @@ $cadProductos = '';
 
                     },
                     success:  function (response) {
-                        $('.cantidadCarrito').html(parseInt($('.cantidadCarrito').html()) + parseInt(response));
+                        var resultado = '<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto';
+                        if (!$.isNumeric(response)) {
+                            if (response != '') {
+                                resultado = response;    
+                            } else {
+                                resultado = '<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto';
+                            }
+                            
+                        }
+                        
+                        $('.resultadoAgregar').html(resultado);
+                        devolverItems();
+                        
 
                     }
                 }); 

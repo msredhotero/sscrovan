@@ -128,7 +128,7 @@ $serviciosReferencias       = new ServiciosReferencias();
         </div>
         <div class="col-xs-8" style="margin-top:20px;">
 
-            <form>
+            <form method="post" action="pagar.php">
                <?php
                     $total = 0;
                     if (isset($_SESSION['idProducto_carrito_crovan'])) {
@@ -178,11 +178,11 @@ $serviciosReferencias       = new ServiciosReferencias();
                     } else {
                 ?>
                 <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">USTED YA ESTA LOGUEADO EN CROVAN KEGS</h4>
+                    <h4 class="scale--js tituloA">NO EXISTEN PRODUCTOS EN SU CARRITO</h4>
                 </div>
                 <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec; height:120px;">
                     <div class="col-xs-6" style="margin-top:20px;">
-                        <button type="button" class="btn-crovan tienda">CONFIRMAR COMPRA</button>
+                        <button type="button" class="btn-crovan tienda">TIENDA</button>
                     </div>
 
                     
@@ -203,14 +203,36 @@ $serviciosReferencias       = new ServiciosReferencias();
                         <h4 style="color:#ABABAB;">TOTAL <span class="total pull-right" id="subtotal"><?php echo $total; ?></span></h4>
                     </div>
                     <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;  border:2px solid #BCBCBC;">
-                        <button type="button" class="btn-crovan2 confirmar">FINALIZAR COMPRA</button>
+                       <div align="center">
+                       <?php
+                           if ($total > 0) {
+                        ?>
+                        <button type="submit" class="btn-crovan2 pagar">PAGAR</button>
+                        <?php           
+                           }
+                        ?>
+
+                        
+                        </div>
                     </div>
+                    <div class="col-xs-3">
+                        
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;">
+                    
                     <div class="col-xs-3">
                     
                     </div>
-                </div>
-                <div class="row">
-
+                    <div class="col-xs-3">
+                        <button type="button" class="btn btn-default volver">VOLVER</button>
+                    </div>
+                    <div class="col-xs-3">
+                        
+                    </div>
+                    <div class="col-xs-3">
+                        
+                    </div>
                 </div>
               
               
@@ -282,6 +304,11 @@ $serviciosReferencias       = new ServiciosReferencias();
             
             $('.tienda').click(function() {
                 url = "../productos/";
+                $(location).delay(4000).attr('href',url);                   
+            });
+            
+            $('.volver').click(function() {
+                url = "../carrito/";
                 $(location).delay(4000).attr('href',url);                   
             });
         

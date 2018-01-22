@@ -57,6 +57,9 @@ switch ($accion) {
     case 'quitarProductoTienda':
         quitarProductoTienda($serviciosReferencias);
         break;
+    case 'devolverItems':
+        devolverItems($serviciosReferencias);
+        break;
         
 /* fin carrito de compra */
         
@@ -477,6 +480,10 @@ case 'traerProductosPorCategoriaEspecificacionWeb':
         $res = $serviciosReferencias->quitarProductoTienda($idProducto);
         
         echo $res;
+    }
+
+    function devolverItems($serviciosReferencias) {
+        echo $serviciosReferencias->devolverCantidadItemsCarrito();
     }
 /* fin carrito de compra */
 

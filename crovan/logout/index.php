@@ -82,7 +82,7 @@ $usuario = '';
                 <div class="col-xs-1">
                 </div>
                 <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;">BIENVENIDO EN CROVAN KEGS</h3></a></li>                
+                    <li class="dropdown"><h3 style="margin-top:-5px;"><spam class="glyphicon glyphicon-log-out"></spam> CERRO SU SESSION CORRECTAMENTE</h3></li>                
                 </div>                         
             </ul>
         </div>
@@ -94,29 +94,16 @@ $usuario = '';
         <div class="col-xs-6" style="margin-top:20px;">
 
             <form>
-               <?php
-                    if (!isset($_SESSION['id_crovan'])) {
-                ?>
+
                 <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">USTED A SALIDO DE CROVAN KEGS LO ESPERAMOS NUEVAMENTE</h4>
-                </div>
-              
-                <?php
-                    } else {
-                ?>
-                <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">USTED YA ESTA LOGUEADO EN CROVAN KEGS</h4>
+                    <h4 class="scale--js tituloA">VUELVA LO ESPERAMOS PRONTO</h4>
                 </div>
                 <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec;">
 
-                    <button type="button" class="btn-crovan logout">SALIR</button>
+                    <button type="button" class="btn-crovan productos" onclick="javascript:location.href='../productos/'">PRODUCTOS</button>
 
                 </div>
 
-                
-                <?php
-                    }
-                ?>
               
               
             </form>

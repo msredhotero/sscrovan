@@ -247,34 +247,61 @@ function crearDirectorioPrincipal($dir) {
     function agregarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
         session_start();
         $error = 0;
+        
+        $stock = $this->hayStockWeb($idProducto);
+        
 		if (isset($_SESSION['idProducto_carrito_crovan'])) {
             
             if (in_array($idProducto, $_SESSION['idProducto_carrito_crovan'])) {
-                $this->modificarCantidadCarritoSinSession($idProducto, $cantidad, $precioUnit, $idUsuario=null);
-                $error = 0;
+                $error = $this->modificarCantidadCarritoSinSession($idProducto, $cantidad, $precioUnit, $idUsuario=null);
             } else {
+                
+                if ($stock < $cantidad) {
+                    $error = '<spam class="glyphicon glyphicon-remove-circle"></spam> Stock Insuficiente';
+                } else {
+                    
+                
+                    array_push($_SESSION['idProducto_carrito_crovan'], $idProducto);
+                    array_push($_SESSION['cantidad_carrito_crovan'], $cantidad);
+                    array_push($_SESSION['precio_carrito_crovan'], $precioUnit);
+                    array_push($_SESSION['idUsuario_carrito_crovan'], $idUsuario);
+                    $error = 1;
+                }
+            }
+            
+        } else {
+            
+            if ($stock < $cantidad) {
+                $error = 'Stock Insuficiente';
+            } else {
+                $_SESSION['idProducto_carrito_crovan'] = array();
+                $_SESSION['cantidad_carrito_crovan'] = array();
+                $_SESSION['precio_carrito_crovan'] = array();
+                $_SESSION['idUsuario_carrito_crovan'] = array();
+
                 array_push($_SESSION['idProducto_carrito_crovan'], $idProducto);
                 array_push($_SESSION['cantidad_carrito_crovan'], $cantidad);
                 array_push($_SESSION['precio_carrito_crovan'], $precioUnit);
                 array_push($_SESSION['idUsuario_carrito_crovan'], $idUsuario);
                 $error = 1;
             }
-            
-        } else {
-            $_SESSION['idProducto_carrito_crovan'] = array();
-            $_SESSION['cantidad_carrito_crovan'] = array();
-            $_SESSION['precio_carrito_crovan'] = array();
-            $_SESSION['idUsuario_carrito_crovan'] = array();
-            
-            array_push($_SESSION['idProducto_carrito_crovan'], $idProducto);
-            array_push($_SESSION['cantidad_carrito_crovan'], $cantidad);
-            array_push($_SESSION['precio_carrito_crovan'], $precioUnit);
-            array_push($_SESSION['idUsuario_carrito_crovan'], $idUsuario);
-            $error = 1;
         }
         
         return $error;
         
+    }
+    
+    
+    function devolverCantidadItemsCarrito() {
+        @session_start();
+
+        
+        
+        if (isset($_SESSION['idProducto_carrito_crovan'])) {
+            return count($_SESSION['idProducto_carrito_crovan']);
+        }
+        
+        return 0;
     }
     
     function modificarCantidadCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
@@ -299,13 +326,15 @@ function crearDirectorioPrincipal($dir) {
         //busco la posicion en el array
         $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
         
-        $_SESSION['cantidad_carrito_crovan'][$posItem] = $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem];
+        $stock = $this->hayStockWeb($idProducto);
         
-        if ($error == '') {
-            return '';
+        if ($stock < $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem]) {
+            $error = '<spam class="glyphicon glyphicon-remove-circle"></spam> Stock Insuficiente';
         } else {
-            return $error;
+            $_SESSION['cantidad_carrito_crovan'][$posItem] = $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem];
         }
+        
+        return $error;
     }
     
     
@@ -351,7 +380,13 @@ function crearDirectorioPrincipal($dir) {
         //busco la posicion en el array
         $posItem = array_search($idProducto, $_SESSION['idProducto_carrito_crovan']);
         
-        $_SESSION['cantidad_carrito_crovan'][$posItem] += $cantidad;
+        $stock = $this->hayStockWeb($idProducto);
+        
+        if ($stock < $cantidad + $_SESSION['cantidad_carrito_crovan'][$posItem]) {
+            $cantidad = 0;
+        } else {
+            $_SESSION['cantidad_carrito_crovan'][$posItem] += $cantidad;
+        }
         
         if ($error == '') {
             return $cantidad;
@@ -928,6 +963,29 @@ function descontarStock($idProductos, $cantidad) {
 	$producto = $this->traerProductosPorId($idProductos);
 	
 	return $this->mysqli_result($producto,0,'nombre'); 
+}
+    
+function hayStockWeb($idProducto, $enCarrito=0) {
+    $sql = "select (case when stock - stockmin - ".$enCarrito." < 0 then 0 else stock - stockmin end) as stock from dbproductos where idproducto =".$idProducto;
+    
+    $res = $this->query($sql,0); 
+    
+    return $this->mysqli_result($res,0,0);
+}
+
+function verificarCarritoProductosStock($lstProductos, $lstCantidad) {
+    $falta = 0;
+    
+    $i=0;
+    foreach ($lstProductos as $row) {
+        $stock = $this->hayStockWeb($row);
+        if ($stock < $lstCantidad[$i]) {
+            $falta = 1;
+        }
+        $i += 1;
+    }
+    
+    return $falta;
 }
 
 function sumarStock($idProductos, $cantidad) {
@@ -2170,10 +2228,11 @@ function generarNroVenta() {
 /* PARA Detalleventas */
 
 function insertarDetalleventas($refventas,$refproductos,$cantidad,$costo,$precio,$total,$nombre) {
-$sql = "insert into dbdetalleventas(iddetalleventa,refventas,refproductos,cantidad,costo,precio,total,nombre)
-values ('',".$refventas.",".$refproductos.",".$cantidad.",".$costo.",".$precio.",".$total.",'".utf8_decode($nombre)."')";
-$res = $this->query($sql,1);
-return $res;
+    $sql = "insert into dbdetalleventas(iddetalleventa,refventas,refproductos,cantidad,costo,precio,total,nombre)
+    values ('',".$refventas.",".$refproductos.",".$cantidad.",".$costo.",".$precio.",".$total.",'".utf8_decode($nombre)."')";
+    $res = $this->query($sql,1);
+
+    return $res;
 }
 
 
@@ -2267,30 +2326,30 @@ return $res;
 /* Fin */
 /* PARA Ventas */
 
-function insertarVentas($reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refclientes,$descuento) {
-$sql = "insert into dbventas(idventa,reftipopago,numero,fecha,total,usuario,cancelado,refclientes,descuento)
-values ('',".$reftipopago.",'".utf8_decode($numero)."','".utf8_decode($fecha)."',".$total.",'".utf8_decode($usuario)."',".$cancelado.",".$refclientes.",".$descuento.")";
-$res = $this->query($sql,1);
-return $res;
-}
+function insertarVentas($reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refusuarios,$descuento,$refestados,$idmercadopago) { 
+$sql = "insert into dbventas(idventa,reftipopago,numero,fecha,total,usuario,cancelado,refusuarios,descuento,refestados,idmercadopago) 
+values ('',".$reftipopago.",'".($numero)."','".utf8_decode($fecha)."',".$total.",'".($usuario)."',".$cancelado.",".$refusuarios.",".$descuento.",".$refestados.",'".($idmercadopago)."')"; 
+$res = $this->query($sql,1); 
+return $res; 
+} 
 
 
-function modificarVentas($id,$reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refclientes) {
-$sql = "update dbventas
-set
-reftipopago = ".$reftipopago.",numero = '".utf8_decode($numero)."',fecha = '".utf8_decode($fecha)."',total = ".$total.",usuario = '".utf8_decode($usuario)."',cancelado = ".$cancelado.",refclientes = ".$refclientes."
-where idventa =".$id;
-$res = $this->query($sql,0);
+function modificarVentas($id,$reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refusuarios,$descuento,$refestados,$idmercadopago) { 
+    $sql = "update dbventas 
+                set 
+            reftipopago = ".$reftipopago.",numero = '".utf8_decode($numero)."',fecha = '".utf8_decode($fecha)."',total = ".$total.",usuario = '".($usuario)."',cancelado = ".$cancelado.",refusuarios = ".$refusuarios.",descuento = ".$descuento.",refestados = ".$refestados.",idmercadopago = '".($idmercadopago)."' 
+            where idventa =".$id; 
+    $res = $this->query($sql,0); 
+    
+    if ($cancelado == 1) {
+        $resDetalle = $this->traerDetalleventasPorVenta($id);
+        while ($row = mysql_fetch_array($resDetalle)) {
+            $this->sumarStock($row['refproductos'],$row['cantidad']); //regreso el stock de la venta
+        }
+    }
+    return $res; 
+} 
 
-if ($cancelado == 1) {
-	$resDetalle = $this->traerDetalleventasPorVenta($id);
-	while ($row = mysql_fetch_array($resDetalle)) {
-		$this->sumarStock($row['refproductos'],$row['cantidad']); //regreso el stock de la venta
-	}
-}
-
-return $res;
-}
 
 
 function eliminarVentas($id) {

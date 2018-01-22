@@ -7,30 +7,63 @@
 
 <body>
 <?php
-function query($sql,$accion) {
-	
-	require_once 'appconfig.php';
-
-	$appconfig	= new appconfig();
-	$datos		= $appconfig->conexion();
-	$hostname	= $datos['hostname'];
-	$database	= $datos['database'];
-	$username	= $datos['username'];
-	$password	= $datos['password'];
-	
-	
-	$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
-	
-	mysql_select_db($database);
-	
-	$result = mysql_query($sql,$conex);
-	if ($accion && $result) {
-		$result = mysql_insert_id();
+function mysqli_result($res,$row=0,$col=0){
+	    $numrows = mysqli_num_rows($res);
+	    if ($numrows && $row <= ($numrows-1) && $row >=0){
+	        mysqli_data_seek($res,$row);
+	        $resrow = (is_numeric($col)) ? mysqli_fetch_row($res) : mysqli_fetch_assoc($res);
+	        if (isset($resrow[$col])){
+	            return $resrow[$col];
+	        }
+	    }
+	    return false;
 	}
-	mysql_close($conex);
-	return $result;
-	
-}
+
+	function query($sql,$accion) {
+		
+		
+		
+		require_once 'appconfig.php';
+
+		$appconfig	= new appconfig();
+		$datos		= $appconfig->conexion();	
+		$hostname	= $datos['hostname'];
+		$database	= $datos['database'];
+		$username	= $datos['username'];
+		$password	= $datos['password'];
+		
+		//$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
+		$conex = mysqli_connect($hostname,$username,$password, $database);
+
+		if (!$conex) {
+		    echo "Error: No se pudo conectar a MySQL." . PHP_EOL;
+		    echo "errno de depuración: " . mysqli_connect_errno() . PHP_EOL;
+		    echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
+		    exit;
+		}
+		//mysql_select_db($database);
+		
+		$error = 0;
+		mysqli_query($conex,"BEGIN");
+		$result=mysqli_query($conex,$sql);
+		if ($accion && $result) {
+			$result = mysqli_insert_id($conex);
+		}
+		if(!$result){
+			$error=1;
+		}
+		if($error==1){
+			mysqli_query($conex,"ROLLBACK");
+			return false;
+		}
+		 else{
+			mysqli_query($conex,"COMMIT");
+			return $result;
+		}
+
+		mysqli_close($conex);
+		
+	}
 
 
 
@@ -118,7 +151,7 @@ function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 	$sql	=	"show columns from ".$tabla;
 	$res 	=	query($sql,0);
 	
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = mysqli_fetch_array($res)) {
 		if ($row[3] == 'MUL') {
 			$TableReferencia 	= str_replace('ref','',$row[0]);
 			//if ($tablasArAux[$TableReferencia] == 1) {
@@ -129,7 +162,7 @@ function recursiveTablas($ar, $tabla, $aliasTablaMadre) {
 			$sqlTR	=	"show columns from ".$ar[$TableReferencia];
 			//die(var_dump($tablasAr['clientes']));
 			$resTR 	=	query($sqlTR,0);
-			$inner .= " inner join ".$ar[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
+			$inner .= " inner join ".$ar[$TableReferencia]." ".substr($TableReferencia,0,2)." ON ".substr($TableReferencia,0,2).".".mysqli_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
 			
 		}
 	}
@@ -147,7 +180,7 @@ $resMapeo 	=	query($sqlMapaer,0);
 
 $aliasTablaMadre = '';
 
-while ($rowM = mysql_fetch_array($resMapeo)) {
+while ($rowM = mysqli_fetch_array($resMapeo)) {
 
 $sql	=	"show columns from ".$rowM[0];
 $res 	=	query($sql,0);
@@ -200,7 +233,7 @@ if ($res == false) {
 		break;
 	*/
 	$inner = '';
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = mysqli_fetch_array($res)) {
 		if ($row[3] == 'PRI') {
 			$clave = $row[0];			
 		} else {
@@ -213,7 +246,7 @@ if ($res == false) {
 				$sqlTR	=	"show columns from ".$tablasAr[$TableReferencia];
 				//die(var_dump($tablasAr['clientes']));
 				$resTR 	=	query($sqlTR,0);
-				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,3)." ON ".substr($TableReferencia,0,3).".".mysql_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
+				$inner .= " inner join ".$tablasAr[$TableReferencia]." ".substr($TableReferencia,0,3)." ON ".substr($TableReferencia,0,3).".".mysqli_result($resTR,0,0)." = ".$aliasTablaMadre.".".$row[0]." <br>";
 				/*if ($TableReferencia == 'clientevehiculos') {
 					die(var_dump('aca'));
 				}*/
