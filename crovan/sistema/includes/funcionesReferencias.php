@@ -3088,6 +3088,21 @@ order by 1";
 $res = $this->query($sql,0); 
 return $res; 
 } 
+    
+    
+function traerEspecificacionesproductoPorCategoria($idCategoria) { 
+$sql = "select 
+e.idespecificacionproducto,
+e.refgrupoespecificaiones,
+e.especificacion
+from tbespecificacionesproducto e 
+inner join dbgrupoespecificaciones gru ON gru.idgrupoespecificaion = e.refgrupoespecificaiones 
+inner join dbcategoriasespecificacion ce ON ce.refgrupoespecificaciones = e.refgrupoespecificaiones
+where ce.refcategorias = ".$idCategoria."
+order by 1"; 
+$res = $this->query($sql,0); 
+return $res; 
+} 
 
 
 function traerEspecificacionesproductoPorId($id) { 

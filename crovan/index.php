@@ -20,6 +20,13 @@ $cadProductos = '';
         $cadProductos .= '<option value="'.$row[0].'">'.$row['nombre'].'</option>';
     }
 
+$subBarriles = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(1);
+$subMiniKegs = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(2);
+$subAccesorios = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(3);
+
+
+$items = $serviciosReferencias->devolverCantidadItemsCarrito();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -80,23 +87,49 @@ $cadProductos = '';
             <ul class="nav nav-pills nav-justified">
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=1">Barriles <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="productos/index.php?cat=1">Entrar</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=1">Barriles</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subBarriles)) {
+                            if ($row[1]== 3) {
+                                $subSeccion = $row[2].' litros';    
+                            } else {
+                                $subSeccion = $row[2];
+                            }
+                        ?>
+                        <li role="presentation"><a href="productos/index.php?cat=1&sub=<?php echo $row[0]; ?>"><?php echo $subSeccion; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=2">MiniKeg <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="productos/index.php?cat=2">Entrar</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=2">MiniKeg</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subMiniKegs)) {
+                            if ($row[1]== 3) {
+                                $subSeccion = $row[2].' litros';    
+                            } else {
+                                $subSeccion = $row[2];
+                            }
+                            
+                        ?>
+                        <li role="presentation"><a href="productos/index.php?cat=2&sub=<?php echo $row[0]; ?>"><?php echo $subSeccion; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="listar.php?cat=3">Accesorios <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="productos/index.php?cat=3">Entrar</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
+                        <li role="presentation"><a href="productos/index.php?cat=3">Accesorios</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subAccesorios)) {
+                        ?>
+                        <li role="presentation"><a href="productos/index.php?cat=3&sub=<?php echo $row[0]; ?>"><?php echo $row[2]; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
             </ul>

@@ -40,6 +40,10 @@ $cadProductos = '';
 
 $items = $serviciosReferencias->devolverCantidadItemsCarrito();
 
+$subBarriles = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(1);
+$subMiniKegs = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(2);
+$subAccesorios = $serviciosReferencias->traerEspecificacionesproductoPorCategoria(3);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -113,55 +117,52 @@ $items = $serviciosReferencias->devolverCantidadItemsCarrito();
 
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Minikegs <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">10 Litros</a></li>
-                        <li role="presentation"><a href="#">5 Litros</a></li>
-                        <li role="presentation"><a href="#">4 Litros</a></li>
-                        <li role="presentation"><a href="#">2 Litros</a></li>
-                        <li role="presentation"><a href="#">Botellon 2L</a></li>
-                        <li role="presentation"><a href="#">Accesorios</a></li>
+                        <li role="presentation"><a href="index.php?cat=2">MiniKeg</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subMiniKegs)) {
+                            if ($row[1]== 3) {
+                                $subSeccion = $row[2].' litros';    
+                            } else {
+                                $subSeccion = $row[2];
+                            }
+                        ?>
+                        <li role="presentation"><a href="index.php?cat=2&sub=<?php echo $row[0]; ?>"><?php echo $subSeccion; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Barriles <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">Euro Standard</a></li>
-                        <li role="presentation"><a href="#">Din Standard</a></li>
-                        <li role="presentation"><a href="#">Slim Standard</a></li>
+                        <li role="presentation"><a href="index.php?cat=1">Barriles</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subBarriles)) {
+                            if ($row[1]== 3) {
+                                $subSeccion = $row[2].' litros';    
+                            } else {
+                                $subSeccion = $row[2];
+                            }
+                        ?>
+                        <li role="presentation"><a href="index.php?cat=1&sub=<?php echo $row[0]; ?>"><?php echo $subSeccion; ?></a></li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Accesorios <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">Conectores</a></li>
-                        <li role="presentation"><a href="#">Reguladores de Presión</a></li>
-                        <li role="presentation"><a href="#"> Primario</a></li>
-                        <li role="presentation"><a href="#"> Con manguera</a></li>
-                        <li role="presentation"><a href="#"> Sin manguera</a></li>
-                        <li role="presentation"><a href="#">  Secundario</a></li>
-                        <li role="presentation"><a href="#"> Party Pump</a></li>
-                        <li role="presentation"><a href="#"> Torres – Pilones</a></li>
+                        <li role="presentation"><a href="index.php?cat=3">Accesorios</a></li>
+                        <?php
+                        while ($row = mysqli_fetch_array($subAccesorios)) {
+                        ?>
+                        <li role="presentation"><a href="index.php?cat=3&sub=<?php echo $row[0]; ?>"><?php echo $row[2]; ?></a></li>
+                        <?php
+                        }
+                        ?>
 
                     </ul>
                 </li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Levaduras<span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">First Item</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
-                    </ul>
-                </li>  
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Lúpulos <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">First Item</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Maltas <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="#">First Item</a></li>
-                        <li role="presentation"><a href="#">Second Item</a></li>
-                        <li role="presentation"><a href="#">Third Item</a></li>
-                    </ul>
-                </li>                                              
+                                                         
             </ul>
         </div>
     </div>
@@ -191,8 +192,13 @@ $items = $serviciosReferencias->devolverCantidadItemsCarrito();
                     <ul class="nav nav-pills nav-stacked">
                       <?php 
                         while ($rowD = mysqli_fetch_array($traerValores)) {
+                            if ($rowD[1]== 3) {
+                                $subSeccion = $rowD[2].' litros';    
+                            } else {
+                                $subSeccion = $rowD[2];
+                            }
                       ?>
-                      <li role="presentation" class="lstSecciones"><a href="javascript:void(0)" class="subseccion" id="<?php echo $rowD[0]; ?>"><?php echo $rowD[2]; ?></a></li>
+                      <li role="presentation" class="lstSecciones"><a href="javascript:void(0)" class="subseccion" id="<?php echo $rowD[0]; ?>"><?php echo $subSeccion; ?></a></li>
                         <?php
                             }
                         ?>
@@ -216,57 +222,9 @@ $items = $serviciosReferencias->devolverCantidadItemsCarrito();
                     <h1>Nombre del Producto</h1>
                 </div>
                 <div class="col-xs-12 text-center lstProductos">
-                    <div class="col-xs-4 hidden">
-                        <img src="../assets/img/prod/1.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
-                    <div class="col-xs-4 hidden">
-                        <img src="assets/img/prod/2.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
-                    <div class="col-xs-4 hidden">
-                        <img src="assets/img/prod/1.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
+                    
                 </div>
-                <div class="col-xs-12 text-center mprprodlist pprod hidden">
-                    <div class="col-xs-4">
-                        <img src="assets/img/prod/2.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
-                    <div class="col-xs-4">
-                        <img src="assets/img/prod/1.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
-                    <div class="col-xs-4">
-                        <img src="assets/img/prod/2.png" class="img-responsive hvr-grow">
-                        <h5>Nombre del producto</h5>
-                        <h4>$xx.xx</h4>
-                        <button type="button" class="btn btn-warning" aria-label="Center Align">
-                          <span class="center-block " aria-hidden="true">COMPRAR</span>
-                        </button>
-                    </div>
-                </div>                
+                           
             </div>    
 
                 <div class="col-xs-12 text-center">
@@ -424,8 +382,18 @@ $items = $serviciosReferencias->devolverCantidadItemsCarrito();
                 alert("Error, vuelva a realizar la acción.");   
               }
         })
-
+        
+        <?php
+        if (!isset($_GET['sub'])) {
+        ?>
         traerProductosCategoria();
+        <?php
+        } else {
+        ?>
+        traerProductosCategoriaEspecificaciones(<?php echo $_GET['sub']; ?>);
+        <?php
+        }
+        ?>
 
     });
 </script>   

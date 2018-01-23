@@ -117,7 +117,7 @@ $serviciosReferencias       = new ServiciosReferencias();
                 <div class="col-xs-1">
                 </div>
                 <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-shopping-cart"></span> MI CARRITO</h3></a></li>                
+                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-credit-card"></span> CONFIRMAR</h3></a></li>                
                 </div>                         
             </ul>
         </div>
