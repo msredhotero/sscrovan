@@ -21,6 +21,11 @@ $serviciosFunciones         = new Servicios();
 $serviciosHTML              = new ServiciosHTML();
 $serviciosReferencias       = new ServiciosReferencias();
 
+$items = $serviciosReferencias->devolverCantidadItemsCarrito();
+
+if ($items < 1) {
+    header('Location: ../index.php');
+}
     
 ?>
 <!DOCTYPE html>
@@ -82,6 +87,11 @@ $serviciosReferencias       = new ServiciosReferencias();
         padding: 10px 20px;
         font-weight: 600;
     }
+        
+    .modal-header {
+
+        background-color: #ff8501;
+     }
     </style>
 </head>
 
@@ -118,26 +128,28 @@ $serviciosReferencias       = new ServiciosReferencias();
                 <div class="col-xs-1">
                 </div>
                 <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-credit-card"></span> CONFIRMAR</h3></a></li>                
+                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-shopping-cart"></span> MI CARRITO</h3></a></li>                
                 </div>                         
             </ul>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-2">
+        <div class="col-xs-1">
             
         </div>
-        <div class="col-xs-8" style="margin-top:20px;">
-            
-             
-            <form method="post" action="pagar.php">
+        <div class="col-xs-10" style="margin-top:20px;">
+
+            <form>
+              <div id="lstProductosCarrito">
                <?php
                     $total = 0;
                     if (isset($_SESSION['idProducto_carrito_crovan'])) {
                 ?>
                 <?php
                 $i=0;
+                $cantidadAux = 0;
                 foreach ($_SESSION['idProducto_carrito_crovan'] as $row) {
+
                     $resProducto = $serviciosReferencias->traerProductosPorIdWeb($row);
                     $imagen = $serviciosReferencias->mysqli_result($resProducto,0,'imagenproducto');
                     $nombre = $serviciosReferencias->mysqli_result($resProducto,0,'nombre');
@@ -145,33 +157,48 @@ $serviciosReferencias       = new ServiciosReferencias();
                     $precio = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa');
                     $total += $serviciosReferencias->mysqli_result($resProducto,0,'precioventa') * $_SESSION['cantidad_carrito_crovan'][$i];
                     
+                    $cantidadDisponible = $serviciosReferencias->hayStockWeb($row);
+
+                    if ($cantidadDisponible < $_SESSION['cantidad_carrito_crovan'][$i]) {
+                        $cantidadAux = $cantidadDisponible;
+                    } else {
+                        $cantidadAux = $_SESSION['cantidad_carrito_crovan'][$i];
+                    }
+                    
                 ?>
                 <div class="row" id="col-data-<?php echo $row; ?>">
                 <div class="col-xs-2" style="margin-top:20px;">
                     <img src="../<?php echo $imagen; ?>" style="max-height: 110px;" class="img-responsive hvr-grow">
                 </div>
                 <div class="col-xs-10" style="margin-top:20px; border-bottom:3px solid #ff8601; padding-bottom:22px;">
-                    <div class="col-xs-6" style="margin-top:20px;">
+                    <div class="col-xs-5" style="margin-top:20px;">
                         <h4><?php echo $nombre; ?></h4>
                         <p><?php echo substr($descripcion,0,30); ?></p>
                     </div>
-                    <div class="col-xs-4" style="margin-top:20px;">
+                    <div class="col-xs-3" style="margin-top:20px;">
                         <ul class="list-inline">
-
                             <li>
-                                <input readonly style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $_SESSION['cantidad_carrito_crovan'][$i]; ?>"/>
+                                <button type="button" class="btn btn-default quitarCantidad" id="<?php echo $row; ?>"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                            </li>
+                            <li>
+                                <input style="width:50px; text-align: center; padding:4px;" type="text" readonly id="cantidad<?php echo $row; ?>" name="cantidad" value="<?php echo $cantidadAux; ?>" maxlength="<?php echo $cantidadDisponible; ?>"/>
                                 
                             </li>
-
+                            <li>
+                                <button type="button" class="btn btn-default agregarCantidad" id="<?php echo $row; ?>" data-toggle="modal" data-target="#exampleModal"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-xs-2" style="margin-top:20px;">
-                        <h4>$ <span class="precio" id="precio<?php echo $row; ?>"><?php echo ($precio * $_SESSION['cantidad_carrito_crovan'][$i]); ?></span></h4>
+                        <h4>$ <span class="precio" id="precio<?php echo $row; ?>"><?php echo ($precio * $cantidadAux); ?></span></h4>
                         <input style="width:50px; text-align: center; padding:4px;" type="hidden" readonly id="hprecio<?php echo $row; ?>" name="hprecio" value="<?php echo $precio; ?>"/>
                     </div>
-
+                    <div class="col-xs-2" style="margin-top:20px;">
+                        <h5 style="color:#2E64FE; cursor: pointer;" class="quitarProducto" id="<?php echo $row; ?>">ELIMINAR</h5>
+                    </div>
                 </div>
                 </div>
+                </div><!-- fin del contenedor de carrito -->
                 <?php
                     $i += 1;
                 }
@@ -179,14 +206,17 @@ $serviciosReferencias       = new ServiciosReferencias();
                 <?php
                     } else {
                 ?>
+            
                 <div class="scale__container--js">
-                    <h4 class="scale--js tituloA">NO EXISTEN PRODUCTOS EN SU CARRITO</h4>
+                    <h4 class="scale--js tituloA">USTED YA ESTA LOGUEADO EN CROVAN KEGS</h4>
                 </div>
                 <div class="form-group" style="padding:20px; background-color:#f5f5f5; border:1px solid #ececec; height:120px;">
                     <div class="col-xs-6" style="margin-top:20px;">
                         <button type="button" class="btn-crovan tienda">TIENDA</button>
                     </div>
-
+                    <div class="col-xs-6" style="margin-top:20px;">
+                        <button type="button" class="btn-crovan logout">SALIR</button>
+                    </div>
                     
 
                 </div>
@@ -197,55 +227,63 @@ $serviciosReferencias       = new ServiciosReferencias();
                     }
                 ?>
                 
-                <div class="row" style="margin-top:30px;">
+                <div class="row" style="margin-top:30px; " id="divFinalizarCompra">
                     <div class="col-xs-3">
                     
                     </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px;  border:2px solid #BCBCBC;">
-                        <h4 style="color:#ABABAB;">TOTAL <span class="total pull-right" id="subtotal"><?php echo $total; ?></span></h4>
+                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px; border-bottom:2px solid #BCBCBC;">
+                        <h4 style="color:#ABABAB;">SUBTOTAL <span class="total pull-right" id="subtotal"><?php echo $total; ?></span></h4>
                     </div>
-                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;  border:2px solid #BCBCBC;">
-                       <div align="center">
-                       <?php
-                           if ($total > 0) {
-                        ?>
-                        <button type="submit" class="btn-crovan2 pagar">PAGAR</button>
-                        <?php           
-                           }
-                        ?>
-
-                        
-                        </div>
+                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;">
+                        <button type="button" class="btn-crovan confirmar">FINALIZAR COMPRA</button>
                     </div>
                     <div class="col-xs-3">
-                        
+                    
                     </div>
                 </div>
-                <div class="row" style="margin-top:20px;">
-                    
+                <div class="row">
                     <div class="col-xs-3">
                     
                     </div>
-                    <div class="col-xs-3">
-                        <button type="button" class="btn btn-default volver">VOLVER</button>
+                    <div class="col-xs-3" style="background-color: #EDEDED; height:60px; padding-top:8px;">
+                        <h4>TOTAL <span class="total pull-right" id="total"><?php echo $total; ?></span></h4>
+                    </div>
+                    <div class="col-xs-3" style="background-color: #EDEDED;height:60px; padding-top:8px;">
+                        <button type="button" class="btn-crovan2 tienda">CONTINUAR COMPRANDO</button>
                     </div>
                     <div class="col-xs-3">
-                        
-                    </div>
-                    <div class="col-xs-3">
-                        
+                    
                     </div>
                 </div>
               
               
             </form>
         </div>
-        <div class="col-xs-2">
+        <div class="col-xs-1">
             
         </div>
     </div>
 
-
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Crovan Kegs Carrito</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="resultadoAgregar"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="row">
         <div class="col-xs-12 ">
             <p class="text-center text-muted">Crovan Kegs | (+ 54 9) 11 7017 3422 | info@crovankegs.com</p>
@@ -309,8 +347,20 @@ $serviciosReferencias       = new ServiciosReferencias();
                 $(location).delay(4000).attr('href',url);                   
             });
             
-            $('.volver').click(function() {
-                url = "../carrito/";
+            $('.confirmar').click(function() {
+                <?php
+                    if ($usuario == '') {
+                ?>
+                url = "../logincompra/";
+                <?php
+                    } else {
+                        
+                ?>
+                url = "../confirmacion/";
+                <?php  
+                    }
+                ?>
+                
                 $(location).delay(4000).attr('href',url);                   
             });
         
@@ -331,6 +381,12 @@ $serviciosReferencias       = new ServiciosReferencias();
                         $('#precio'+idProducto).html( parseFloat($('#'+contenedor).val()) * parseFloat($('#hprecio'+idProducto).val()) );
                         
                         actualizarTotal();
+                        
+                        if (response == 0) {
+                            $('.resultadoAgregar').html('<spam class="glyphicon glyphicon-remove-circle"></spam> Stock Insuficiente');
+                        } else {
+                            $('.resultadoAgregar').html('<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto');
+                        }
                     } else {
                         $('.error').html(response);    
                         $('.error').removeClass('alert alert-success');
@@ -348,7 +404,13 @@ $serviciosReferencias       = new ServiciosReferencias();
             $( ".precio" ).each(function( index ) {
               total += parseFloat($( this ).text());
             });
-
+            
+            if (total == 0) {
+                
+                $('#divFinalizarCompra').hide();
+                        
+            }
+            
             $('#total').html(total);
             $('#subtotal').html(total);
         }
@@ -362,9 +424,9 @@ $serviciosReferencias       = new ServiciosReferencias();
   
         $('.agregarCantidad').click(function() {
             prodId =  $(this).attr("id"); 
-            if ($('#cantidad'+ prodId).val() < 11) {
-                modificarCantidad(prodId,'cantidad' + prodId, 'I');
-            }
+
+            modificarCantidad(prodId,'cantidad' + prodId, 'I');
+            
         });
               
         
@@ -382,6 +444,7 @@ $serviciosReferencias       = new ServiciosReferencias();
                     if (response == '') {
                         $('#col-data-'+idProducto).remove();
                         actualizarTotal();
+                        
 
                     } else {
                         $('.error').html(response);    

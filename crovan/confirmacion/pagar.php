@@ -47,6 +47,13 @@ if (isset($_SESSION['idProducto_carrito_crovan'])) {
             $error = "Su Compra se registro correctamente";
             $ico   = "glyphicon glyphicon-ok-sign";
 
+            //*********   verifico por ultima vez el stock    *********************//
+            $resVerificacion = $serviciosReferencias->verificarCarritoProductosStock($_SESSION['idProducto_carrito_crovan'], $_SESSION['cantidad_carrito_crovan']);
+
+            if ($resVerificacion == 1) {
+                header('../carrito/corregir.php');
+            }
+            //********              fin                         *******************//
                 //----- INGRESO LA COMPRA  -----//
                 //-- parametros --//
 
@@ -78,6 +85,8 @@ if (isset($_SESSION['idProducto_carrito_crovan'])) {
                     $total          = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa') * $_SESSION['cantidad_carrito_crovan'][$i];
 
                     $resDetalle = $serviciosReferencias->insertarDetalleventas($resVenta,$row,$cantidad,$costo,$precio,$total,$nombre);
+
+                    $serviciosReferencias->descontarStock($row, $cantidad);
 
                     $totalGral += $total;
 
