@@ -32,7 +32,7 @@ if (mysqli_num_rows($codActivacion) > 0) {
         $destinatario = $email;
         $asunto = "Cuenta Activada Correctamente";
         $cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
-                    <p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href='http://www.crovankegs.com/crovan/tienda/'>AQUI</a></p>";
+                    <p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href='http://www.crovankegs.com/tienda/'>AQUI</a></p>";
 
         $serviciosUsuario->modificarActivacionusuariosConcretada($token);
         $serviciosUsuario->enviarEmail($destinatario,$asunto,$cuerpo);

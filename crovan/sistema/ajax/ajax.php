@@ -2495,7 +2495,7 @@ function registrarUsuario($serviciosUsuarios) {
 	$destinatario = $email;
 	$asunto = "Activar Cuenta";
 	$cuerpo = "<h3>Gracias por registrarse en Crovan Kegs.</h3><br>
-				<p>Por favor haga click <a href='http://www.crovankegs.com/crovan/tienda/activacion/index.php?token=".$token."'>AQUI</a> para activar la cuenta</p><br><br>
+				<p>Por favor haga click <a href='http://www.crovankegs.com/tienda/activacion/index.php?token=".$token."'>AQUI</a> para activar la cuenta</p><br><br>
 				<p>PD: Recuerde que solo estara pendiente la confirmacion por 2 dias</p>";
 
 	if ((integer)$res > 0) {
