@@ -244,6 +244,8 @@ function crearDirectorioPrincipal($dir) {
 /* fin archivos */
 
 /* para el carrito de compra */
+    
+    
     function agregarCarrito($idProducto, $cantidad, $precioUnit, $idUsuario=null) {
         session_start();
         $error = 0;
@@ -2349,6 +2351,17 @@ function modificarVentas($id,$reftipopago,$numero,$fecha,$total,$usuario,$cancel
     }
     return $res; 
 } 
+    
+    
+function modificarVentasSoloTotal($id,$total) { 
+    $sql = "update dbventas 
+                set 
+            total = ".$total."
+            where idventa =".$id; 
+    $res = $this->query($sql,0); 
+    
+    return $res; 
+} 
 
 
 
@@ -3522,7 +3535,7 @@ function query_p($sql,$accion) {
 		mysqli_query($conex,"BEGIN");
 		$result=mysqli_query($conex,$sql);
 		if ($accion && $result) {
-			$result = mysql_insert_id();
+			$result = mysqli_insert_id($conex);
 		}
 		if(!$result){
 			$error=1;

@@ -127,7 +127,8 @@ $serviciosReferencias       = new ServiciosReferencias();
             
         </div>
         <div class="col-xs-8" style="margin-top:20px;">
-
+            
+             
             <form method="post" action="pagar.php">
                <?php
                     $total = 0;

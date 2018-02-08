@@ -16,11 +16,12 @@ function conexion() {
 		*/
 		/*
 		$hostname = "localhost";
-		$database = "u235498999_crova";
-		$username = "u235498999_crova";
-		$password = "rhcp7575";
+		$database = "mqwldfiz_crovan";
+		$username = "mqwldfiz_crovan";
+		$password = "rhcp75757979";
+    */
 		//u235498999_kike usuario
-	*/
+	
 		
 		$conexion = array("hostname" => $hostname,
 						  "database" => $database,

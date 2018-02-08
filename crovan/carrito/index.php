@@ -140,6 +140,7 @@ if ($items < 1) {
         <div class="col-xs-10" style="margin-top:20px;">
 
             <form>
+              <div id="lstProductosCarrito">
                <?php
                     $total = 0;
                     if (isset($_SESSION['idProducto_carrito_crovan'])) {
@@ -189,6 +190,7 @@ if ($items < 1) {
                     </div>
                 </div>
                 </div>
+                </div><!-- fin del contenedor de carrito -->
                 <?php
                     $i += 1;
                 }
@@ -196,6 +198,7 @@ if ($items < 1) {
                 <?php
                     } else {
                 ?>
+            
                 <div class="scale__container--js">
                     <h4 class="scale--js tituloA">USTED YA ESTA LOGUEADO EN CROVAN KEGS</h4>
                 </div>
@@ -216,7 +219,7 @@ if ($items < 1) {
                     }
                 ?>
                 
-                <div class="row" style="margin-top:30px; ">
+                <div class="row" style="margin-top:30px; " id="divFinalizarCompra">
                     <div class="col-xs-3">
                     
                     </div>
@@ -393,7 +396,13 @@ if ($items < 1) {
             $( ".precio" ).each(function( index ) {
               total += parseFloat($( this ).text());
             });
-
+            
+            if (total == 0) {
+                
+                $('#divFinalizarCompra').hide();
+                        
+            }
+            
             $('#total').html(total);
             $('#subtotal').html(total);
         }
@@ -427,6 +436,7 @@ if ($items < 1) {
                     if (response == '') {
                         $('#col-data-'+idProducto).remove();
                         actualizarTotal();
+                        
 
                     } else {
                         $('.error').html(response);    

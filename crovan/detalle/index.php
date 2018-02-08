@@ -111,7 +111,7 @@ $cantidadDisponible = $serviciosReferencias->hayStockWeb($idProducto);
     if ($items > 0) {
         echo '<a href="../carrito/"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>';
     } else {
-        echo '<a href="#"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>';
+        echo '<a href="#" class="linkCarrito"><div class="col-xs-4 mp-navbar"><img src="../assets/img/carrito.png">  <span class="badge cantidadCarrito">0</span></div></a>';
     }
     ?>
     
@@ -402,7 +402,7 @@ $cantidadDisponible = $serviciosReferencias->hayStockWeb($idProducto);
                     url:   '../sistema/ajax/ajax.php',
                     type:  'post',
                     beforeSend: function () {
-
+                        $('.agregarCarrito').hide();
                     },
                     success:  function (response) {
                         var resultado = '<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto';
@@ -411,11 +411,16 @@ $cantidadDisponible = $serviciosReferencias->hayStockWeb($idProducto);
                                 resultado = response;    
                             } else {
                                 resultado = '<spam class="glyphicon glyphicon-ok-circle"></spam> Se cargo al carrito el producto';
+                                
                             }
+                            
+                            
                             
                         }
                         
                         $('.resultadoAgregar').html(resultado);
+                        $('.linkCarrito').prop('href', '../carrito/');
+                        $('.agregarCarrito').show();
                         devolverItems();
                         
 

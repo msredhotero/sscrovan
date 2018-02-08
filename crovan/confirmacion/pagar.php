@@ -25,7 +25,7 @@ $serviciosReferencias       = new ServiciosReferencias();
 //  tomo el estado de la compra   ///
 $estado = 1;
 
-
+$estadoCompra = 0;
 
 ////////       EJECUTO TODO LO DE MERCADOPAGO  ////////
 
@@ -37,78 +37,98 @@ $estado = 1;
 
 ////////             FIN ESTADO DE LA COMRPA   ////////
 
+$totalGral = 0;
 
-switch ($estado) {
-        
-    case 1:
-        ////////                TODO "OK"                          ////////
-        $error = "Su Compra se registro correctamente";
-        $ico   = "glyphicon glyphicon-ok-sign";
+if (isset($_SESSION['idProducto_carrito_crovan'])) {
+    switch ($estado) {
 
-            //----- INGRESO LA COMPRA  -----//
-            //-- parametros --//
+        case 1:
+            ////////                TODO "OK"                          ////////
+            $error = "Su Compra se registro correctamente";
+            $ico   = "glyphicon glyphicon-ok-sign";
 
-            $numero         = $serviciosReferencias->generarNroVenta();
-            $reftipopago    = 3; //me lo da la api de mercadopago "payment_type"
-            $fecha          = date('Y-m-d H:i:s');
-            $total          = $serviciosReferencias->traerTotalCompra();
-            $usuario        = $usuario;
-            $cancelado      = 0;
-            $refusuarios    = $_SESSION['id_crovan'];
-            $descuento      = 0;
-            $refestados     = 1; //me lo da la api de mercadopago "status"
-            $idmercadopago  = ''; //token o algo que me devuelva
+                //----- INGRESO LA COMPRA  -----//
+                //-- parametros --//
 
-            //--  fin parametros -----///
+                $numero         = $serviciosReferencias->generarNroVenta();
+                $reftipopago    = 3; //me lo da la api de mercadopago "payment_type"
+                $fecha          = date('Y-m-d H:i:s');
+                $total          = 0;
+                $usuario        = $usuario;
+                $cancelado      = 0;
+                $refusuarios    = $_SESSION['id_crovan'];
+                $descuento      = 0;
+                $refestados     = 7; //me lo da la api de mercadopago "status"
+                $idmercadopago  = ''; //token o algo que me devuelva
 
-            $resVenta = $serviciosReferencias->insertarVentas($reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refusuarios,$descuento,$refestados,$idmercadopago);
+                //--  fin parametros -----///
 
-            //-- fin compra ------///////
+                $resVenta = $serviciosReferencias->insertarVentas($reftipopago,$numero,$fecha,$total,$usuario,$cancelado,$refusuarios,$descuento,$refestados,$idmercadopago);
 
-            //---   inserto los detalles ----///
-            $i=0;
-            foreach ($_SESSION['idProducto_carrito_crovan'] as $row) {
-                $cantidad       = $_SESSION['cantidad_carrito_crovan'][$i];
-                $resProducto    = $serviciosReferencias->traerProductosPorIdWeb($row);
-                $nombre         = $serviciosReferencias->mysqli_result($resProducto,0,'nombre');
-                $precio         = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa');
-                $costo          = $serviciosReferencias->mysqli_result($resProducto,0,'preciocosto');
-                $total          = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa') * $_SESSION['cantidad_carrito_crovan'][$i];
-                
-                $resDetalle = $serviciosReferencias->insertarDetalleventas($resVenta,$row,$cantidad,$costo,$precio,$total,$nombre);
-                
-            }
-        
-            //--- borro todo el carrito menos el login -----//
-            unset($_SESSION['idProducto_carrito_crovan']);
-            unset($_SESSION['cantidad_carrito_crovan']);
-            unset($_SESSION['precio_carrito_crovan']);
-            unset($_SESSION['idUsuario_carrito_crovan']);
-        
-            //---  fin borrar carrito -----//////////////////
+                //-- fin compra ------///////
 
-            //---    fin insertar los detalles ///
+                //---   inserto los detalles ----///
+                $i=0;
+                foreach ($_SESSION['idProducto_carrito_crovan'] as $row) {
+                    $cantidad       = $_SESSION['cantidad_carrito_crovan'][$i];
+                    $resProducto    = $serviciosReferencias->traerProductosPorIdWeb($row);
+                    $nombre         = $serviciosReferencias->mysqli_result($resProducto,0,'nombre');
+                    $precio         = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa');
+                    $costo          = $serviciosReferencias->mysqli_result($resProducto,0,'preciocosto');
+                    $total          = $serviciosReferencias->mysqli_result($resProducto,0,'precioventa') * $_SESSION['cantidad_carrito_crovan'][$i];
 
-        ////////            FIN                                     ///////
+                    $resDetalle = $serviciosReferencias->insertarDetalleventas($resVenta,$row,$cantidad,$costo,$precio,$total,$nombre);
 
-    break;
-    case 2:    
-        ////////                TODO "MAL"                          ////////
-        $error = "Su Compra no pudo realizarce, vuelva a intentarlo";
-        $ico   = "glyphicon glyphicon-remove-sign";
+                    $totalGral += $total;
 
-        ////////            FIN                                     ///////
+                }
+
+                $serviciosReferencias->modificarVentasSoloTotal($resVenta,$totalGral);
+
+                //--- borro todo el carrito menos el login -----//
+                unset($_SESSION['idProducto_carrito_crovan']);
+                unset($_SESSION['cantidad_carrito_crovan']);
+                unset($_SESSION['precio_carrito_crovan']);
+                unset($_SESSION['idUsuario_carrito_crovan']);
+
+                //---  fin borrar carrito -----//////////////////
+
+                //---    fin insertar los detalles ///
 
 
-    break;
-    case 3:    
-        ////////                TODO "PENDIENTE"                          ////////
-        $error = "Su Compra quedo pendiente de pago, aguardamos al pago para procesar su solicitud";
-        $ico   = "glyphicon glyphicon-exclamation-sign";
+                //****    SI PASO ALGO BORRO TODO Y DEVUELVO EL STOCK ************/////////
 
-        ////////            FIN                                     ///////
-    break;
 
+                //****            FIN DEL ROLLBACK                    ************/////////
+
+                //****   despues de confirmar todo verifico el nuevo estado *****//////////
+                $estadoCompra = 1;
+
+
+
+            ////////            FIN                                     ///////
+
+        break;
+        case 2:    
+            ////////                TODO "MAL"                          ////////
+            $error = "Su Compra no pudo realizarce, vuelva a intentarlo";
+            $ico   = "glyphicon glyphicon-remove-sign";
+
+            ////////            FIN                                     ///////
+
+
+        break;
+        case 3:    
+            ////////                TODO "PENDIENTE"                          ////////
+            $error = "Su Compra quedo pendiente de pago, aguardamos al pago para procesar su solicitud";
+            $ico   = "glyphicon glyphicon-exclamation-sign";
+
+            ////////            FIN                                     ///////
+        break;
+
+    }
+} else {
+    $estadoCompra = 0;
 }
         
 ?>
@@ -207,7 +227,17 @@ switch ($estado) {
                 <div class="col-xs-1">
                 </div>
                 <div class="col-xs-11">
-                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-gift"></span> COMPRA</h3></li>                
+                    <?php
+                        if ($estadoCompra == 1) {
+                    ?>
+                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-gift"></span> TU COMPRA SE EFECTUÓ CON ÉXITO.</h3></li>                
+                    <?php
+                        } else {
+                    ?>
+                    <li class="dropdown"><h3 style="margin-top:-5px;"><span class="glyphicon glyphicon-remove"></span> LO SENTIMOS, SE GENERO UN ERROR EN LA COMPRA.</h3></li>                   
+                    <?php        
+                        }
+                    ?>
                 </div>                         
             </ul>
         </div>
@@ -217,7 +247,38 @@ switch ($estado) {
             
         </div>
         <div class="col-xs-8" style="margin-top:20px;">
-
+            <?php
+                if ($estadoCompra == 1) {
+            ?>
+            <div align="center">
+                <ul class="list-inline" style="font-size:120px; color:#F7DC6F;">
+                    <li><span class="glyphicon glyphicon-send"> </span></li>
+                    <li><span class="glyphicon glyphicon-envelope"> </span></li>
+                    <li>@</li>
+                </ul>  
+                <br>
+                <br>
+                <h3 style="border-bottom:2px solid #F7DC6F;font-size: 160%;">PARA TERMINAR TU REGISTRO TE ENVIAREMOS UN EMAIL DE CONFIRMACIÓN</h3>
+                <br>
+                <br>
+                <h5 style="font-size: 100%;">MUCHAS GRACIAS POR ELEGIRNOS. <a href="../index.php">REGRESE A CROVAN KEGS</a></h5>  
+            </div>               
+            <?php
+                } else {
+            ?>
+            <div align="center">
+                <ul class="list-inline" style="font-size:120px; color:#F7DC6F;">
+                    <li><span class="glyphicon glyphicon-send"> </span></li>
+                    <li><span class="glyphicon glyphicon-envelope"> </span></li>
+                    <li>@</li>
+                </ul>  
+                <br>
+                <br>
+                <h3 style="border-bottom:2px solid #F00;font-size: 160%;">SE GENERO UN INCONVENIENTE, INTENTE NUEVAMENTE. <a href="../index.php">REGRESE A CROVAN KEGS</a></h3>
+            </div>                    
+            <?php        
+                }
+            ?>
             
         </div>
         <div class="col-xs-2">
