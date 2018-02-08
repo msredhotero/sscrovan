@@ -90,6 +90,7 @@
                 <div class="scale__container--js">
                     <h4 class="scale--js tituloA">COMPLETA EL FORMULARIO CON TUS DATOS Y HACE TUS COMPRAS</h4>
                 </div>
+                <div id="camposForm">
               <div class="form-group">
                 
                 <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="E-MAIL">
@@ -123,6 +124,7 @@
                 <div class="form-group">
                 
                 <input type="text" class="form-control" id="txtTelefono" aria-describedby="emailHelp" placeholder="TELEFONO">
+              </div>
               </div>
               <div class="form-group">
                   <div class="error"></div>
@@ -349,6 +351,9 @@
         $('.registrar').click(function(){
            if (validar() == '') {
                registrar($('#txtEmail').val(),$('#txtPassword').val(),$('#txtNombre').val(),$('#txtApellido').val(),$('#txtPassword2').val(),$('#txtTelefono').val());
+               
+               $('#camposForm').hide();
+               $(this).hide();
            }
                
         });
