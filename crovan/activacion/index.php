@@ -35,7 +35,7 @@ if (mysqli_num_rows($codActivacion) > 0) {
                     <p>Ya puede comenzar a comprar ingresando con su email y contraseña, visite nuestros productos <a href=''>AQUI</a></p>";
 
         $serviciosUsuario->modificarActivacionusuariosConcretada($token);
-        //$serviciosUsuario->enviarMail($destinatario,$asunto,$cuerpo);
+        $serviciosUsuario->enviarEmail($destinatario,$asunto,$cuerpo);
     }
 } else {
 	$error = 1;

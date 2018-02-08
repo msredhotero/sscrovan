@@ -2500,7 +2500,7 @@ function registrarUsuario($serviciosUsuarios) {
 
 	if ((integer)$res > 0) {
 		$serviciosUsuarios->insertarActivacionusuarios($res,$token,'','');
-		$serviciosUsuarios->enviarMail($destinatario,$asunto,$cuerpo);
+		$serviciosUsuarios->enviarEmail($destinatario,$asunto,$cuerpo);
 		echo '';	
 	} else {
 		echo $res;	
